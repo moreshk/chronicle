@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-neutral-950 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))] text-white;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+.button-connect-wallet {
+  @apply !bg-[rgba(120,119,198,0.3)];
+}
+
+.wallet-adapter-button-trigger {
+  @apply !bg-[rgba(120,119,198,0.3)] text-white rounded-full;
+}
+
+.wallet-adapter-modal-wrapper {
+  @apply bg-neutral-950 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))];
+}
+
+.wallet-adapter-dropdown-list-active {
+  @apply !bg-[rgba(120,119,198,0.3)] text-white rounded-2xl w-44;
+}
+.wallet-adapter-dropdown-list {
+  @apply !bg-[rgba(120,119,198,0.3)] text-white rounded-2xl w-44;
+}
