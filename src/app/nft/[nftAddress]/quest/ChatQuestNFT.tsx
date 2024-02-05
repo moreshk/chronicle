@@ -314,7 +314,7 @@ const ChatWithQuestNft = ({
           )}
         </div>
       </div>
-      <div className="fixed bottom-6 sm:bottom-14 w-full">
+      <div className="fixed bottom-0 pb-6 sm:pb-14 w-full bg-[#0A0A0A]">
         <div className="max-w-4xl mx-auto sm:p-0 p-6">
           <form
             onSubmit={(e) => {
