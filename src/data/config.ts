@@ -1,3 +1,1 @@
-export const config = {
-    mintAddress: 'AM4hjKksjSGFp8fAj32PWAumLYjqt33ctKVfLhCUZTv6'
-}
+export const config = { mintAddress: 'AM4hjKksjSGFp8fAj32PWAumLYjqt33ctKVfLhCUZTv6' }
