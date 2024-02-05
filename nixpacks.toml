@@ -1,3 +1,3 @@
 [phases.setup]
-nixPkgs = ['...', 'python311', 'gcc',"npm-9.5.0",]
+nixPkgs = ['...', 'python311', 'gcc', 'npm-9_5_0']
 aptPkgs = ['build-essential']
