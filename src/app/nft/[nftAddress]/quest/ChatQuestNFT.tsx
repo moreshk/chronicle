@@ -1,5 +1,4 @@
 "use client";
-import Avatar from "boring-avatars";
 import { useEffect, useRef, useState } from "react";
 import { getQuestResponse } from "@/serverAction/openAI";
 import InputSpotlightBorder from "@/components/InputSpotlightBorder";
@@ -206,17 +205,16 @@ const ChatWithQuestNft = ({
               }`}
             >
               {message.role === "user" ? (
-                <Avatar
-                  size={32}
-                  name="Maria Mitchell"
-                  variant="marble"
-                  colors={["#92A1C6", "#535758"]}
-                />
+                <img src={image} className="rounded-full" alt="nft image" />
               ) : (
                 <div className="relative inline-block overflow-hidden rounded-full h-8 w-8 flex-shrink-0 p-0.5 transition ease-in-out duration-300">
                   <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)] bg-white/30" />
                   <div className="inline-flex h-full w-full cursor-pointer items-center justify-center bg-slate-950/90 text-sm font-medium rounded-full text-white backdrop-blur-3xl">
-                    <img src={image} className="rounded-full" alt="nft image" />
+                    <img
+                      src={"/master.png"}
+                      className="rounded-full"
+                      alt="nft image"
+                    />
                   </div>
                 </div>
               )}
