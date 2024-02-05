@@ -1,4 +1,8 @@
+# Use an official Node.js runtime as a parent image
 FROM node:18-alpine AS base
+
+# Install Python and other necessary dependencies for node-gyp
+RUN apk add --no-cache python3 make g++
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -14,7 +18,6 @@ RUN \
   elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
   else echo "Lockfile not found." && exit 1; \
   fi
-
 
 # Rebuild the source code only when needed
 FROM base AS builder
