@@ -30,3 +30,11 @@ body {
 .wallet-adapter-dropdown-list {
   @apply !bg-[rgba(120,119,198,0.3)] text-white rounded-2xl w-44;
 }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

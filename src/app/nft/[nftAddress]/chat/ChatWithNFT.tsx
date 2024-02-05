@@ -84,7 +84,7 @@ const ChatWithNft = ({
     <div>
       <div
         ref={ref}
-        className="mx-auto max-w-4xl w-full mt-8 h-[calc(100vh-34px)] overflow-y-auto px-6 sm:px-0 pb-40"
+        className="mx-auto max-w-4xl w-full mt-8 h-[calc(100vh-34px)] overflow-y-auto no-scrollbar px-6 sm:px-0 pb-40"
       >
         <div className="flex items-center gap-4">
           <div className="relative inline-block overflow-hidden rounded-2xl h-16 w-16 p-1  transition ease-in-out duration-300">
