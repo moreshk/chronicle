@@ -179,8 +179,8 @@ const ChatWithQuestNft = ({
   };
 
   return (
-    <div ref={ref} className="min-h-screen">
-      <div className="mx-auto max-w-4xl w-full mt-8  px-6 sm:px-0 pb-40">
+    <div ref={ref}>
+      <div className="mx-auto max-w-4xl w-full mt-8 min-h-[calc(100vh-34px)]  px-6 sm:px-0 pb-40">
         <div className=" mx-auto mt-5 flex flex-col gap-7">
           {messages.map((message, index) => (
             <div

@@ -3,7 +3,6 @@
 import { ConnectWallet } from "@/components/connectWallet";
 import { useNFT } from "@/context/nftCollection.context";
 import { useWallet } from "@solana/wallet-adapter-react";
-import ChatWithNft from "./ChatQuestNFT";
 import StartQuest from "./StartQuest";
 
 const Page = ({
