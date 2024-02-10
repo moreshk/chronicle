@@ -10,7 +10,7 @@ export const NetworkProvider = ({
   children: React.ReactNode;
 }) => {
   const [network, setNetwork] = useState<WalletAdapterNetwork>(
-    WalletAdapterNetwork.Devnet
+    WalletAdapterNetwork.Mainnet
   );
   const onChange = (value: string) => {
     switch (value) {

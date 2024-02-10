@@ -22,7 +22,8 @@ export default function WalletWrapper({
   children: React.ReactNode;
 }) {
   const { network } = useNetwork();
-  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+  // const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+  const endpoint = useMemo(() => 'https://api.metaplex.solana.com/', [network]);
   const wallets = useMemo(
     () => [
       new PhantomWalletAdapter(),

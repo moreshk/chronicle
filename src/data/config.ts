@@ -1,1 +1,1 @@
-export const config = { mintAddress: 'AM4hjKksjSGFp8fAj32PWAumLYjqt33ctKVfLhCUZTv6' }
+export const config = { mintAddress: 'HrDFFFacT6xVUUEBWDjvGvR6z1eDuKd2egtQsA8p3yd2' }

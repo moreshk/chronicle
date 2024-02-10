@@ -52,7 +52,7 @@ const InputSpotlightBorder = ({
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           autoComplete="off"
-          placeholder="What happened next..."
+          placeholder="Your message here..."
           type="text"
           onChange={(e) => {
             onChange(e.target.value);

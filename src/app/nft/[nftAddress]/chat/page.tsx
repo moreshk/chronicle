@@ -36,12 +36,14 @@ const Page = ({
 
     if (nftDetails) {
       const hash = nftAddress.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-      const randomNumber = (hash % 9) + 1;
+      const randomNumber = (hash % 10) + 1;
       const speakingStyles = [
-        "witty", "snarky", "curt", "rude",  "goofy", 
-        "flowery", "angry", "bored", "excited"
+         "rude",  "over excited",
+        "flowery",  "bored", "snarky", "curt", "witty", "angry", "goofy", "bombastic",
       ];
       const speakingStyle = speakingStyles[randomNumber - 1];
+
+      console.log(speakingStyle);
 
       if (nftDetails.json && nftDetails.json.image && nftDetails.json.description &&
           nftDetails.json.name && nftDetails.json.attributes) {
