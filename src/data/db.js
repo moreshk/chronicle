@@ -30,6 +30,19 @@ async function insertChatHistory(nft_id, wallet_address, message_sent, response_
   }
 }
 
+async function hasEnoughCredits(nftAddress) {
+  const queryText = 'SELECT credits FROM nft_credits WHERE nft_address = $1';
+  const { rows } = await pool.query(queryText, [nftAddress]);
+  if (rows.length === 0) {
+    // No record found for the NFT address
+    return false;
+  }
+  return rows[0].credits > 0;
+}
+
+
+
 module.exports = {
   insertChatHistory,
+  hasEnoughCredits,
 };
