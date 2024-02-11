@@ -3,7 +3,7 @@ import Avatar from "boring-avatars";
 import { useEffect, useRef, useState } from "react";
 import { getResponse } from "@/serverAction/openAI";
 import InputSpotlightBorder from "@/components/InputSpotlightBorder";
-import fetch from 'isomorphic-unfetch';
+// import fetch from 'isomorphic-unfetch';
 
 const ChatWithNft = ({
   image,
