@@ -3,7 +3,6 @@ import Avatar from "boring-avatars";
 import { useEffect, useRef, useState } from "react";
 import { getResponse } from "@/serverAction/openAI";
 import InputSpotlightBorder from "@/components/InputSpotlightBorder";
-import fetch from 'isomorphic-unfetch';
 
 const ChatWithNft = ({
   image,
@@ -19,7 +18,7 @@ const ChatWithNft = ({
   description: string;
   properties: { [key: string]: unknown; trait_type?: string; value?: string }[];
   speakingStyle: string;
-  nftAddress: string; // Add the NFT address type
+  nftAddress: string;
   walletAddress: string;
 }) => {
   const [userInput, setUserInput] = useState("");
@@ -34,35 +33,12 @@ const ChatWithNft = ({
     }
   }, [loading, messages]);
 
-// Function to record the chat history in the database
-const recordChatHistory = async (message_sent: string, response_received: string) => {
-  try {
-    const response = await fetch('/api/track-message', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        nft_id: nftAddress, // Use the NFT address as the ID
-        wallet_address: walletAddress, // Use the actual wallet address passed as a prop
-        message_sent,
-        response_received,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to record chat history');
-    }
-  } catch (error) {
-    console.error('Error recording chat history', error);
-  }
-};
-
   const submitMessage = async () => {
     if (!userInput.length) return;
     setLoading(true);
     const userMessage: Message = { content: userInput, role: "user" };
     setUserInput("");
+
     try {
       setMessages([...messages, userMessage]);
       const traits = properties
@@ -89,14 +65,6 @@ const recordChatHistory = async (message_sent: string, response_received: string
         return message;
       });
       const content = await getResponse(promptData);
-
-      const assistantMessage: Message = {
-        role: "assistant",
-        content: content || "No response",
-      };
-
-      // Record the chat history in the database
-      await recordChatHistory(userMessage.content, assistantMessage.content);
       setMessages([
         ...messageHistory,
         { role: "user", content: userInput },
@@ -111,7 +79,6 @@ const recordChatHistory = async (message_sent: string, response_received: string
     }
   };
 
-  // ... existing return statement
   return (
     <div ref={ref}>
       <div className="mx-auto max-w-4xl w-full mt-8 min-h-[calc(100vh-34px)] px-6 sm:px-0 pb-40">

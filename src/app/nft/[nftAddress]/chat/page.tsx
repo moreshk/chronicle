@@ -11,7 +11,7 @@ const Page = ({
   params: { nftAddress: string };
 }) => {
   const { nfts, error, isNftLoaded } = useNFT();
-  const { connected } = useWallet();
+  const { publicKey, connected } = useWallet(); // publicKey is the user's wallet address
 
   if (error) {
     return (
@@ -43,8 +43,6 @@ const Page = ({
       ];
       const speakingStyle = speakingStyles[randomNumber - 1];
 
-      console.log(speakingStyle);
-
       if (nftDetails.json && nftDetails.json.image && nftDetails.json.description &&
           nftDetails.json.name && nftDetails.json.attributes) {
         return (
@@ -54,6 +52,8 @@ const Page = ({
             title={nftDetails.json.name}
             properties={nftDetails.json.attributes}
             speakingStyle={speakingStyle}
+            nftAddress={nftAddress} // Pass the NFT address to the ChatWithNft component
+            walletAddress={publicKey!.toBase58()} // Pass the user's wallet address to the ChatWithNft component
           />
         );
       }
