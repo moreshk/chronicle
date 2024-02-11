@@ -57,14 +57,14 @@ const Page = () => {
         >
           Select to see character profiles
         </motion.h2>
-        <div className="flex flex-col sm:flex-row gap-4 sm:gap-10 mt-6 sm:mt-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-10 mt-6 sm:mt-10">
           {nfts.map((nft) => (
             <div
               onClick={() => push(`/nft/${nft.address.toBase58()}/`)}
               className="group"
               key={nft.json?.image}
             >
-              <div className="relative inline-block overflow-hidden rounded-2xl h-64 w-64 p-1  transition ease-in-out duration-300">
+              <div className="relative inline-block overflow-hidden rounded-2xl h-64 w-64 p-1 transition ease-in-out duration-300">
                 <span className="absolute inset-[-1000%] group-hover:animate-[spin_2s_linear_infinite] group-hover:bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)] bg-white/30" />
                 <div className="inline-flex h-full w-full cursor-pointer items-center justify-center bg-slate-950/90 text-sm font-medium rounded-xl text-white backdrop-blur-3xl">
                   <img
