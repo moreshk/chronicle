@@ -70,6 +70,18 @@ const ChatWithNft = ({
     return data.enoughCredits;
   };
 
+
+  const deductCredits = async (nftAddress: string) => {
+    const response = await fetch('/api/deduct-credits', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ nftAddress }),
+    });
+    return response.ok;
+  };
+
   const submitMessage = async () => {
     if (!userInput.length) return;
     setLoading(true);
@@ -139,6 +151,14 @@ const ChatWithNft = ({
 
       // Record the chat history in the database
       await recordChatHistory(userMessage.content, assistantMessage.content);
+      // Deduct credits after getting the chatbot response
+      const creditDeducted = await deductCredits(nftAddress);
+      if (!creditDeducted) {
+        // Handle the case where credits couldn't be deducted
+        setMessages(prevMessages => [...prevMessages, { role: "system", content: "Failed to deduct credits." }]);
+        setLoading(false);
+        return;
+      }
       setMessages([
         ...messageHistory,
         { role: "user", content: userInput },

@@ -41,8 +41,14 @@ async function hasEnoughCredits(nftAddress) {
 }
 
 
+async function deductCredits(nftAddress) {
+  const updateText = 'UPDATE nft_credits SET credits = credits - 1 WHERE nft_address = $1 AND credits > 0';
+  const { rowCount } = await pool.query(updateText, [nftAddress]);
+  return rowCount > 0; // Returns true if the update was successful, false otherwise
+}
 
 module.exports = {
   insertChatHistory,
   hasEnoughCredits,
+  deductCredits, // Export the new function
 };
