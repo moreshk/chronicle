@@ -33,15 +33,28 @@ async function insertChatHistory(nft_id, wallet_address, message_sent, response_
 
 // Add this new function in db.js
 async function ensureCreditsForNFT(nftAddress) {
-  const queryText = 'SELECT credits FROM nft_credits WHERE nft_address = $1';
-  const { rows } = await pool.query(queryText, [nftAddress]);
+  const selectText = 'SELECT credits, last_updated FROM nft_credits WHERE nft_address = $1';
+  const { rows } = await pool.query(selectText, [nftAddress]);
+  const currentTime = new Date();
+
   if (rows.length === 0) {
-    // No record found for the NFT address, insert a new record with 50 credits
-    const insertText = 'INSERT INTO nft_credits (nft_address, credits) VALUES ($1, 50)';
-    await pool.query(insertText, [nftAddress]);
-    return true; // New record with credits is created
+    // No record found for the NFT address, insert a new record with 10 credits
+    const insertText = 'INSERT INTO nft_credits (nft_address, credits, last_updated) VALUES ($1, 10, $2)';
+    await pool.query(insertText, [nftAddress, currentTime]);
+    return true;
+  } else {
+    const lastUpdated = new Date(rows[0].last_updated);
+    const minutesDiff = (currentTime - lastUpdated) / (1000 * 60);
+
+    if (minutesDiff >= 5) {
+      // It's been more than 24 hours since the last update, reset credits to 50
+      const updateText = 'UPDATE nft_credits SET credits = 10, last_updated = $2 WHERE nft_address = $1';
+      await pool.query(updateText, [nftAddress, currentTime]);
+      return true;
+    }
+
+    return rows[0].credits > 0;
   }
-  return rows[0].credits > 0; // Return true if there are enough credits, false otherwise
 }
 
 // Modify the hasEnoughCredits function to use the new ensureCreditsForNFT function
