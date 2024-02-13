@@ -1,0 +1,99 @@
+{
+    "model": "metadata",
+    "address": "HwszBYw9HqFXoSv6HKBGxvdQKMiayZwSgyJnwJmRWA1C",
+    "mintAddress": "DsTqfzXZKw3SPyhtHCstUY89K53SBDZLcqapLM8Hyfeu",
+    "updateAuthorityAddress": "BiLCTDe2KphnuAN4Ja6rT5Pt73QyzP3HWboZdUoFygi3",
+    "json": {
+        "name": "Draven Stormshard",
+        "symbol": "CHRONICLE",
+        "image": "https://nftstorage.link/ipfs/bafybeibi3kzqrknba36ehhuyj7jccgjbcb6g5v2ux4yspf4tkio4na37cq/761.png",
+        "description": "Draven Stormshard, an Elf born into a reclusive Hermit community, was always an outcast due to his uncontrollable rage. As he grew older, his chaotic tendencies became more pronounced, driving him to embrace the path of the Barbarian. Draven's relentless anger became his greatest strength, allowing him to tap into a primal power that resonated with his savage nature. His alignment veered towards Chaotic Evil as he found pleasure in sowing chaos and destruction wherever he went, seeking to unleash havoc upon the civilized world. With his unyielding fury and insatiable thirst for chaos, Draven Stormshard became both a feared adversary and a twisted legend.",
+        "attributes": [
+            {
+                "trait_type": "Species",
+                "value": "Elf"
+            },
+            {
+                "trait_type": "Class",
+                "value": "Barbarian"
+            },
+            {
+                "trait_type": "Background",
+                "value": "Hermit"
+            },
+            {
+                "trait_type": "Alignment",
+                "value": "Chaotic Evil"
+            },
+            {
+                "trait_type": "Gold",
+                "value": 20
+            },
+            {
+                "trait_type": "Trinket",
+                "value": "A shard of obsidian that always feels warm to the touch"
+            },
+            {
+                "trait_type": "Sex",
+                "value": "Male"
+            },
+            {
+                "trait_type": "Hair Colour",
+                "value": "Red"
+            },
+            {
+                "trait_type": "Clothing",
+                "value": "Chain Shirt"
+            },
+            {
+                "trait_type": "Headpiece",
+                "value": "None"
+            },
+            {
+                "trait_type": "Skin Colour",
+                "value": "Bronze"
+            },
+            {
+                "trait_type": "Image Background",
+                "value": "Underworld"
+            }
+        ],
+        "properties": {
+            "files": [
+                {
+                    "uri": "https://nftstorage.link/ipfs/bafybeibi3kzqrknba36ehhuyj7jccgjbcb6g5v2ux4yspf4tkio4na37cq/761.png",
+                    "type": "image/png"
+                }
+            ]
+        }
+    },
+    "jsonLoaded": true,
+    "name": "Draven Stormshard",
+    "symbol": "",
+    "uri": "https://nftstorage.link/ipfs/bafybeieubutxmobyfdsfucltq4qlc6jqaw6fj7k4qkw3hekw725g4ls5ue/761.json",
+    "isMutable": true,
+    "primarySaleHappened": true,
+    "sellerFeeBasisPoints": 500,
+    "editionNonce": 255,
+    "creators": [
+        {
+            "address": "GknJwfsZG3tsdj1XNNjgoL5DeJqZyh94zdJoQuy2gxpm",
+            "verified": true,
+            "share": 0
+        },
+        {
+            "address": "BiLCTDe2KphnuAN4Ja6rT5Pt73QyzP3HWboZdUoFygi3",
+            "verified": false,
+            "share": 100
+        }
+    ],
+    "tokenStandard": 0,
+    "collection": {
+        "verified": true,
+        "key": "HrDFFFacT6xVUUEBWDjvGvR6z1eDuKd2egtQsA8p3yd2",
+        "address": "HrDFFFacT6xVUUEBWDjvGvR6z1eDuKd2egtQsA8p3yd2"
+    },
+    "collectionDetails": null,
+    "uses": null,
+    "programmableConfig": null
+}

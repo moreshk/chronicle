@@ -30,14 +30,24 @@ async function insertChatHistory(nft_id, wallet_address, message_sent, response_
   }
 }
 
-async function hasEnoughCredits(nftAddress) {
+
+// Add this new function in db.js
+async function ensureCreditsForNFT(nftAddress) {
   const queryText = 'SELECT credits FROM nft_credits WHERE nft_address = $1';
   const { rows } = await pool.query(queryText, [nftAddress]);
   if (rows.length === 0) {
-    // No record found for the NFT address
-    return false;
+    // No record found for the NFT address, insert a new record with 50 credits
+    const insertText = 'INSERT INTO nft_credits (nft_address, credits) VALUES ($1, 50)';
+    await pool.query(insertText, [nftAddress]);
+    return true; // New record with credits is created
   }
-  return rows[0].credits > 0;
+  return rows[0].credits > 0; // Return true if there are enough credits, false otherwise
+}
+
+// Modify the hasEnoughCredits function to use the new ensureCreditsForNFT function
+async function hasEnoughCredits(nftAddress) {
+  const hasCredits = await ensureCreditsForNFT(nftAddress);
+  return hasCredits;
 }
 
 
@@ -47,8 +57,10 @@ async function deductCredits(nftAddress) {
   return rowCount > 0; // Returns true if the update was successful, false otherwise
 }
 
+
 module.exports = {
   insertChatHistory,
+  ensureCreditsForNFT,
   hasEnoughCredits,
-  deductCredits, // Export the new function
+  deductCredits,
 };
