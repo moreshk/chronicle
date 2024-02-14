@@ -4,6 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { getResponse } from "@/serverAction/openAI";
 import InputSpotlightBorder from "@/components/InputSpotlightBorder";
 import { useCreditContext } from "@/wrapper/credits.wrapper";
+import {
+  deductCredits,
+  recordChatHistory,
+} from "@/serverAction/getCreditsForNFT";
 
 const ChatWithNft = ({
   image,
@@ -42,54 +46,6 @@ const ChatWithNft = ({
   }, []);
 
   // Function to record the chat history in the database
-  const recordChatHistory = async (
-    message_sent: string,
-    response_received: string
-  ) => {
-    try {
-      const response = await fetch("/api/track-message", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          nft_id: nftAddress, // Use the NFT address as the ID
-          wallet_address: walletAddress, // Use the actual wallet address passed as a prop
-          message_sent,
-          response_received,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to record chat history");
-      }
-    } catch (error) {
-      console.error("Error recording chat history", error);
-    }
-  };
-
-  const checkCredits = async (nftAddress: string) => {
-    const response = await fetch("/api/check-credits", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ nftAddress }),
-    });
-    const data = await response.json();
-    return data.enoughCredits;
-  };
-
-  const deductCredits = async (nftAddress: string) => {
-    const response = await fetch("/api/deduct-credits", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ nftAddress }),
-    });
-    return response.ok;
-  };
 
   const submitMessage = async () => {
     if (!userInput.length) return;
@@ -97,8 +53,7 @@ const ChatWithNft = ({
     const userMessage: Message = { content: userInput, role: "user" };
     setUserInput("");
     setMessages([...messages, userMessage]);
-    const enoughCredits = await checkCredits(nftAddress);
-    if (!enoughCredits) {
+    if (!credits) {
       setMessages([
         ...messages,
         { role: "system", content: "Not enough credits" },
@@ -162,7 +117,12 @@ const ChatWithNft = ({
         },
       ]);
       setLoading(false);
-      await recordChatHistory(userMessage.content, assistantMessage.content);
+      await recordChatHistory(
+        userMessage.content,
+        assistantMessage.content,
+        nftAddress,
+        walletAddress
+      );
       const creditDeducted = await deductCredits(nftAddress);
       if (!creditDeducted) {
         setMessages((prevMessages) => [
