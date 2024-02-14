@@ -5,10 +5,9 @@ import { createContext, useContext } from "react";
 import { FindNftsByOwnerOutput, PublicKey } from "@metaplex-foundation/js";
 import { useMetaplex } from "./metaplex.context";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { config } from "@/data/config";
 import { useRouter } from "next/navigation";
 
-const minPubKey = new PublicKey(config.mintAddress);
+const minPubKey = new PublicKey(process.env.NEXT_PUBLIC_MINT_ADDRESS || "");
 
 export const NFTCollectionProvider = ({
   children,

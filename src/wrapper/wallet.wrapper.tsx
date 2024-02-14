@@ -11,7 +11,6 @@ import {
   TorusWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
-import { clusterApiUrl } from "@solana/web3.js";
 import "@solana/wallet-adapter-react-ui/styles.css";
 import { MetaplexProvider } from "@/context/metaplex.context";
 import { useNetwork } from "@/context/network.context";
@@ -22,8 +21,6 @@ export default function WalletWrapper({
   children: React.ReactNode;
 }) {
   const { network } = useNetwork();
-  // const endpoint = useMemo(() => clusterApiUrl(network), [network]);
-  const endpoint = useMemo(() => 'https://api.metaplex.solana.com/', [network]);
   const wallets = useMemo(
     () => [
       new PhantomWalletAdapter(),
@@ -34,7 +31,7 @@ export default function WalletWrapper({
   );
 
   return (
-    <ConnectionProvider endpoint={endpoint}>
+    <ConnectionProvider endpoint="https://api.metaplex.solana.com/">
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
           <MetaplexProvider>{children}</MetaplexProvider>

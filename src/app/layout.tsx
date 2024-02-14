@@ -6,6 +6,8 @@ import { NetworkProvider } from "@/context/network.context";
 import WalletWrapper from "@/wrapper/wallet.wrapper";
 import { NFTCollectionProvider } from "@/context/nftCollection.context";
 import { ConnectWalletButton } from "@/components/connectWalletButton";
+import { CreditProvider } from "@/wrapper/credits.wrapper";
+import { ShowCredits } from "@/components/showCradits";
 
 const inter = Inter({ subsets: ["latin"] });
 
