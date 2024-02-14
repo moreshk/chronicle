@@ -5,6 +5,7 @@ import { getResponse } from "@/serverAction/openAI";
 import InputSpotlightBorder from "@/components/InputSpotlightBorder";
 import { useCreditContext } from "@/wrapper/credits.wrapper";
 import {
+  checkCredits,
   deductCredits,
   recordChatHistory,
 } from "@/serverAction/getCreditsForNFT";
@@ -53,7 +54,8 @@ const ChatWithNft = ({
     const userMessage: Message = { content: userInput, role: "user" };
     setUserInput("");
     setMessages([...messages, userMessage]);
-    if (!credits) {
+    const enoughCredits = await checkCredits(nftAddress);
+    if (!enoughCredits) {
       setMessages([
         ...messages,
         { role: "system", content: "Not enough credits" },

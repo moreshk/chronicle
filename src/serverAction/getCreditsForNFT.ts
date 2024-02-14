@@ -2,7 +2,7 @@
 
 export const getCreditsFromAPI = async (nftAddress: string) => {
     try {
-        const response = await fetch("http://localhost:3000/api/credits", {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/credits`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -21,7 +21,7 @@ export const getCreditsFromAPI = async (nftAddress: string) => {
 
 
 export const checkCredits = async (nftAddress: string) => {
-    const response = await fetch("/api/check-credits", {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/check-credits`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -33,7 +33,7 @@ export const checkCredits = async (nftAddress: string) => {
 };
 
 export const deductCredits = async (nftAddress: string) => {
-    const response = await fetch("/api/deduct-credits", {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/deduct-credits`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -50,7 +50,7 @@ export const recordChatHistory = async (
     walletAddress: string
 ) => {
     try {
-        const response = await fetch("/api/track-message", {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/track-message`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

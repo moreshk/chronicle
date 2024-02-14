@@ -45,7 +45,9 @@ export const CreditProvider: React.FC<CreditProviderProps> = ({ children }) => {
   };
 
   useEffect(() => {
-    setShowCredits(false);
+    if (!params.nftAddress) {
+      setShowCredits(false);
+    }
   }, [params]);
 
   useEffect(() => {
