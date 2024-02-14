@@ -157,7 +157,10 @@ const ChatWithNft = ({
         </div>
         <div className=" mx-auto mt-5 flex flex-col gap-7">
           <p className="text-lg tracking-wider leading-7 text-gray-50/80">
-            {description}
+            My name is {title} and my species is{" "}
+            {getAttribute("Species", properties)} my gender is{" "}
+            {getAttribute("Sex", properties)} and my class are{" "}
+            {getAttribute("Class", properties)}
           </p>
           {messages.map((message, index) => (
             <div
@@ -322,3 +325,8 @@ const ChatWithNft = ({
 };
 
 export default ChatWithNft;
+
+const getAttribute = (
+  key: string,
+  attribute?: { [key: string]: unknown; trait_type?: string; value?: string }[]
+) => attribute?.find((att) => att.trait_type === key)?.value || "";
