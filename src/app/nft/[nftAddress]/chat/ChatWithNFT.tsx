@@ -157,9 +157,8 @@ const ChatWithNft = ({
         </div>
         <div className=" mx-auto mt-5 flex flex-col gap-7">
           <p className="text-lg tracking-wider leading-7 text-gray-50/80">
-            My name is {title} and my species is{" "}
-            {getAttribute("Species", properties)} my gender is{" "}
-            {getAttribute("Sex", properties)} and my class are{" "}
+            I am {title}, a {getAttribute("Sex", properties)} {" "}
+            {getAttribute("Species", properties)} {" "}
             {getAttribute("Class", properties)}
           </p>
           {messages.map((message, index) => (
