@@ -56,8 +56,8 @@ const ChatWithNft = ({
     setMessages([...messages, userMessage]);
     const enoughCredits = await checkCredits(nftAddress);
     if (!enoughCredits) {
-      setMessages([
-        ...messages,
+      setMessages((oldMessages) => [
+        ...oldMessages,
         { role: "system", content: "Not enough credits" },
       ]);
       setLoading(false);
@@ -178,25 +178,25 @@ const ChatWithNft = ({
                   message.role === "user" ? "items-end" : "items-start"
                 }`}
               >
-                <p
-                  className={`text-lg tracking-wider leading-7 ${
-                    message.role === "user"
-                      ? "text-gray-50/80"
-                      : "text-gray-300"
-                  }`}
-                >
-                  {message.content}
-                </p>
-
                 {message.role === "system" &&
-                  message.content === "Not enough credits" && (
-                    <div
-                      className="border-4 bg-red-900/10 rounded-2xl border-red-900/50 text-red-700/80 px-6 py-2 mt-1"
-                      role="alert"
-                    >
-                      <p>{message.content}</p>
-                    </div>
-                  )}
+                message.content === "Not enough credits" ? (
+                  <div
+                    className="border-4 bg-red-900/10 rounded-2xl border-red-900/50 text-red-700/80 px-6 py-2 mt-1"
+                    role="alert"
+                  >
+                    <p>{message.content}</p>
+                  </div>
+                ) : (
+                  <p
+                    className={`text-lg tracking-wider leading-7 ${
+                      message.role === "user"
+                        ? "text-gray-50/80"
+                        : "text-gray-300"
+                    }`}
+                  >
+                    {message.content}
+                  </p>
+                )}
               </div>
               {message.role === "user" && (
                 <div className="rounded-full h-8 w-8 ml-2">

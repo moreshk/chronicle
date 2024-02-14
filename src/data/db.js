@@ -60,7 +60,6 @@ async function ensureCreditsForNFT(nftAddress) {
   } else {
     const lastUpdated = new Date(rows[0].last_updated);
     const minutesDiff = (currentTime - lastUpdated) / (1000 * 60);
-
     if (minutesDiff >= resetCreditsMinutes) {
       // It's been more than 24 hours since the last update, reset credits to 50
       const updateText =
@@ -83,6 +82,7 @@ async function deductCredits(nftAddress) {
   const updateText =
     "UPDATE nft_credits SET credits = credits - 1 WHERE nft_address = $1 AND credits > 0";
   const { rowCount } = await pool.query(updateText, [nftAddress]);
+  console.log("🚀 ~ deductCredits ~ rowCount:", rowCount);
   return rowCount > 0; // Returns true if the update was successful, false otherwise
 }
 
