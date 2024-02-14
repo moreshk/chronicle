@@ -35,16 +35,31 @@ const Page = ({
     );
 
     if (nftDetails) {
-      const hash = nftAddress.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+      const hash = nftAddress
+        .split("")
+        .reduce((acc, char) => acc + char.charCodeAt(0), 0);
       const randomNumber = (hash % 10) + 1;
       const speakingStyles = [
-         "rude",  "over excited",
-        "flowery",  "bored", "snarky", "curt", "witty", "angry", "goofy", "bombastic",
+        "rude",
+        "over excited",
+        "flowery",
+        "bored",
+        "snarky",
+        "curt",
+        "witty",
+        "angry",
+        "goofy",
+        "bombastic",
       ];
       const speakingStyle = speakingStyles[randomNumber - 1];
 
-      if (nftDetails.json && nftDetails.json.image && nftDetails.json.description &&
-          nftDetails.json.name && nftDetails.json.attributes) {
+      if (
+        nftDetails.json &&
+        nftDetails.json.image &&
+        nftDetails.json.description &&
+        nftDetails.json.name &&
+        nftDetails.json.attributes
+      ) {
         return (
           <ChatWithNft
             image={nftDetails.json.image}
