@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const InputSpotlightBorder = ({
   onChange,
@@ -11,10 +11,10 @@ const InputSpotlightBorder = ({
   disabled?: boolean;
 }) => {
   const divRef = useRef<HTMLInputElement>(null);
-  const [isFocused, setIsFocused] = useState(false);
+  const [isFocused, setIsFocused] = useState(true);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [opacity, setOpacity] = useState(0);
-
+  const inputRef = useRef<HTMLInputElement>(null);
   const handleMouseMove = (e: React.MouseEvent<HTMLInputElement>) => {
     if (!divRef.current || isFocused) return;
 
@@ -23,6 +23,10 @@ const InputSpotlightBorder = ({
 
     setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
   };
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -46,6 +50,7 @@ const InputSpotlightBorder = ({
     <>
       <div className="relative w-full">
         <input
+          ref={inputRef}
           onMouseMove={handleMouseMove}
           onFocus={handleFocus}
           onBlur={handleBlur}
