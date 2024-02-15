@@ -8,7 +8,7 @@ export default function RootLayout({
 }>) {
   return (
     <CreditProvider>
-      <div className="absolute top-3 right-44 sm:top-10 sm:right-56">
+      <div className="absolute top-4 right-52 sm:top-10 sm:right-56">
         <ShowCredits />
       </div>
       {children}
