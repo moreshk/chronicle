@@ -12,8 +12,8 @@ import { ShowCredits } from "@/components/showCradits";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AI Chronicle NFT",
-  description: "Mint an nft with AI generated image",
+  title: "Chronicle",
+  description: "AI D&D for NFTs",
 };
 
 export default function RootLayout({
