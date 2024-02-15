@@ -85,7 +85,7 @@ const ChatWithNft = ({
         role: "system",
         content:
           personalityPrompts[
-            Math.floor(Math.random() * personalityPrompts.length)
+          Math.floor(Math.random() * personalityPrompts.length)
           ],
       };
 
@@ -166,9 +166,8 @@ const ChatWithNft = ({
           {messages.map((message, index) => (
             <div
               key={`${message.role}-${index}`}
-              className={`flex my-2 ${
-                message.role === "user" ? "justify-end" : "justify-start"
-              }`}
+              className={`flex my-2 ${message.role === "user" ? "justify-end" : "justify-start"
+                }`}
             >
               {message.role === "assistant" && (
                 <img
@@ -178,21 +177,25 @@ const ChatWithNft = ({
                 />
               )}
               <div
-                className={`flex flex-col ${
-                  message.role === "user" ? "items-end" : "items-start"
-                }`}
+                className={`flex flex-col ${message.role === "user" ? "items-end" : "items-start"
+                  }`}
               >
                 {message.role === "system" &&
-                message.content === "Not enough credits" ? (
-                  <ShowCreditTimer />
+                  message.content === "Not enough credits" ? (
+                  // <ShowCreditTimer />
+                  <div
+                    className="border-4 bg-red-900/10 rounded-2xl border-red-900/50 text-red-700/80 px-6 py-2 mt-1"
+                    role="alert"
+                  >
+                    <p>{message.content}</p>
+                  </div>
                 ) : (
                   <>
                     <p
-                      className={`text-lg tracking-wider leading-7 ${
-                        message.role === "user"
+                      className={`text-lg tracking-wider leading-7 ${message.role === "user"
                           ? "text-gray-50/80"
                           : "text-gray-300"
-                      }`}
+                        }`}
                     >
                       {message.content}
                     </p>
@@ -340,7 +343,7 @@ const ChatWithNft = ({
                 <InputSpotlightBorder
                   onChange={(value: string) => setUserInput(value)}
                   value={userInput}
-                  disabled={loading}
+                  // disabled={loading}
                 />
               </div>
               <button

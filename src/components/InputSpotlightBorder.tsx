@@ -8,7 +8,7 @@ const InputSpotlightBorder = ({
 }: {
   onChange: (value: string) => void;
   value: string;
-  disabled: boolean;
+  disabled?: boolean;
 }) => {
   const divRef = useRef<HTMLInputElement>(null);
   const [isFocused, setIsFocused] = useState(false);
