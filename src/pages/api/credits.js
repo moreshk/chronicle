@@ -4,8 +4,9 @@ export default async function handler(req, res) {
   if (req.method === "POST") {
     const { nftAddress } = req.body;
     try {
-      const credits = await getCreditsForNFT(nftAddress);
-      res.status(200).json({ credits });
+      const details = await getCreditsForNFT(nftAddress);
+      console.log("🚀 ~ handler ~ details:", details);
+      res.status(200).json(details);
     } catch (error) {
       console.error("Error deducting credits", error);
       res.status(500).json({ message: "Error deducting credits" });

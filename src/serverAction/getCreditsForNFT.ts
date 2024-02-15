@@ -12,10 +12,10 @@ export const getCreditsFromAPI = async (nftAddress: string) => {
             }),
         });
         const data = await response.json()
-        return data.credits
+        return data
     } catch (e) {
         console.log(e)
-        return 'invalid'
+        return undefined
     }
 }
 

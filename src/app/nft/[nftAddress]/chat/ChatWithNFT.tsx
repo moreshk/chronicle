@@ -9,6 +9,7 @@ import {
   deductCredits,
   recordChatHistory,
 } from "@/serverAction/getCreditsForNFT";
+import ShowCreditTimer from "./showCreditTimer";
 
 const ChatWithNft = ({
   image,
@@ -31,7 +32,7 @@ const ChatWithNft = ({
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const { fetchData, setShowCredits, updateCredits, credits } =
+  const { fetchData, setShowCredits, updateCredits, creditsDetails } =
     useCreditContext();
 
   useEffect(() => {
@@ -118,7 +119,9 @@ const ChatWithNft = ({
           content: content || "No response",
         },
       ]);
+
       setLoading(false);
+      updateCredits(creditsDetails?.credits ? creditsDetails.credits - 1 : 0);
       await recordChatHistory(
         userMessage.content,
         assistantMessage.content,
@@ -133,7 +136,6 @@ const ChatWithNft = ({
         ]);
         return;
       }
-      updateCredits(credits - 1);
     } catch (e) {
       setLoading(false);
     }
@@ -157,8 +159,8 @@ const ChatWithNft = ({
         </div>
         <div className=" mx-auto mt-5 flex flex-col gap-7">
           <p className="text-lg tracking-wider leading-7 text-gray-50/80">
-            I am {title}, a {getAttribute("Sex", properties)} {" "}
-            {getAttribute("Species", properties)} {" "}
+            I am {title}, a {getAttribute("Sex", properties)}{" "}
+            {getAttribute("Species", properties)}{" "}
             {getAttribute("Class", properties)}
           </p>
           {messages.map((message, index) => (
@@ -182,12 +184,7 @@ const ChatWithNft = ({
               >
                 {message.role === "system" &&
                 message.content === "Not enough credits" ? (
-                  <div
-                    className="border-4 bg-red-900/10 rounded-2xl border-red-900/50 text-red-700/80 px-6 py-2 mt-1"
-                    role="alert"
-                  >
-                    <p>{message.content}</p>
-                  </div>
+                  <ShowCreditTimer />
                 ) : (
                   <>
                     <p

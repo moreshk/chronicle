@@ -42,7 +42,7 @@ async function insertChatHistory(
 
 const defaultCredits = process.env.DEFAULT_CREDITS || 20; // Fallback to 10 if the environment variable is not set
 const resetCreditsMinutes =
-  parseInt(process.env.RESET_CREDITS_MINUTES, 10) || 15; // Fallback to 5 if the environment variable is not set
+  parseInt(process.env.NEXT_PUBLIC_RESET_CREDITS_MINUTES, 10) || 15; // Fallback to 5 if the environment variable is not set
 
 // Add this new function in db.js
 async function ensureCreditsForNFT(nftAddress) {
@@ -82,27 +82,29 @@ async function deductCredits(nftAddress) {
   const updateText =
     "UPDATE nft_credits SET credits = credits - 1 WHERE nft_address = $1 AND credits > 0";
   const { rowCount } = await pool.query(updateText, [nftAddress]);
-  console.log("🚀 ~ deductCredits ~ rowCount:", rowCount);
   return rowCount > 0; // Returns true if the update was successful, false otherwise
 }
 
 async function getCreditsForNFT(nftAddress) {
-  const selectText = "SELECT credits FROM nft_credits WHERE nft_address = $1";
+  await ensureCreditsForNFT(nftAddress);
+  const selectText =
+    "SELECT credits, last_updated FROM nft_credits WHERE nft_address = $1";
   try {
     const { rows } = await pool.query(selectText, [nftAddress]);
+    console.log("🚀 ~ getCreditsForNFT ~ rows:", rows);
     if (rows.length) {
-      return rows[0].credits;
+      return { credits: rows[0].credits, lastUpdated: rows[0].last_updated };
     } else {
       const currentTime = new Date();
       const insertText =
         "INSERT INTO nft_credits (nft_address, credits, last_updated) VALUES ($1, $2, $3)";
       await pool.query(insertText, [nftAddress, defaultCredits, currentTime]);
       const { rows } = await pool.query(selectText, [nftAddress]);
-      return rows[0].credits;
+      return { credits: rows[0].credits, lastUpdated: rows[0].last_updated };
     }
   } catch (err) {
     console.error("Error in getCreditsForNFT", err);
-    return 0;
+    return { credits: 0, lastUpdated: undefined };
   }
 }
 
@@ -112,4 +114,5 @@ module.exports = {
   hasEnoughCredits,
   deductCredits,
   getCreditsForNFT,
+  resetCreditsMinutes,
 };
