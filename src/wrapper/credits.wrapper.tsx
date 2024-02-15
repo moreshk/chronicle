@@ -74,30 +74,15 @@ export const CreditProvider: React.FC<CreditProviderProps> = ({ children }) => {
       lastUpdated: new Date().toISOString(),
     });
   };
-
   const getSeconds = () => {
-    const resetCreditsSeconds =
-      (process.env.NEXT_PUBLIC_RESET_CREDITS_MINUTES
-        ? parseInt(process.env.NEXT_PUBLIC_RESET_CREDITS_MINUTES, 10)
-        : 10) *
-      60 *
-      60;
-
+    const resetCreditsMin = process.env.NEXT_PUBLIC_RESET_CREDITS_MINUTES
+      ? parseInt(process.env.NEXT_PUBLIC_RESET_CREDITS_MINUTES, 10)
+      : 10;
     if (creditsDetails) {
-      const currentTime = new Date().getTime();
-      const lastUpdated = new Date(creditsDetails.lastUpdated).getTime();
-      const secondsDiff = Math.floor(currentTime - lastUpdated);
-
-      if (secondsDiff >= resetCreditsSeconds) {
-        return 0;
-      } else {
-        const remainingSeconds = resetCreditsSeconds - secondsDiff;
-        return remainingSeconds;
-      }
+      return getRemainingSeconds(creditsDetails.lastUpdated, resetCreditsMin);
     }
 
-    // If creditsDetails is not available, return the default resetCreditsSeconds
-    return resetCreditsSeconds;
+    return resetCreditsMin * 60;
   };
 
   return (
@@ -127,3 +112,21 @@ export const useCreditContext = (): CreditContextProps => {
 
   return context;
 };
+
+function getRemainingSeconds(
+  lastUpdatedTimeString: string,
+  defaultMinutes: number
+) {
+  const lastUpdatedTime = new Date(lastUpdatedTimeString);
+
+  // Calculate the remaining time in seconds
+  const currentTime = new Date();
+  const timeDifferenceInSeconds =
+    (currentTime.getTime() - lastUpdatedTime.getTime()) / 1000;
+  const remainingSeconds = Math.max(
+    defaultMinutes * 60 - timeDifferenceInSeconds,
+    0
+  );
+
+  return remainingSeconds;
+}

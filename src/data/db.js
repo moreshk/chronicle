@@ -34,7 +34,6 @@ async function insertChatHistory(
       message_sent,
       response_received,
     ]);
-    console.log("Chat history record inserted successfully");
   } catch (err) {
     console.error("Error inserting chat history record", err.stack);
   }
@@ -91,7 +90,6 @@ async function getCreditsForNFT(nftAddress) {
     "SELECT credits, last_updated FROM nft_credits WHERE nft_address = $1";
   try {
     const { rows } = await pool.query(selectText, [nftAddress]);
-    console.log("🚀 ~ getCreditsForNFT ~ rows:", rows);
     if (rows.length) {
       return { credits: rows[0].credits, lastUpdated: rows[0].last_updated };
     } else {
