@@ -1,4 +1,3 @@
-"use client";
 import React, { useEffect, useRef, useState } from "react";
 
 const InputSpotlightBorder = ({
@@ -11,10 +10,11 @@ const InputSpotlightBorder = ({
   disabled?: boolean;
 }) => {
   const divRef = useRef<HTMLInputElement>(null);
-  const [isFocused, setIsFocused] = useState(true);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [isFocused, setIsFocused] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [opacity, setOpacity] = useState(0);
-  const inputRef = useRef<HTMLInputElement>(null);
+
   const handleMouseMove = (e: React.MouseEvent<HTMLInputElement>) => {
     if (!divRef.current || isFocused) return;
 
@@ -45,6 +45,29 @@ const InputSpotlightBorder = ({
   const handleMouseLeave = () => {
     setOpacity(0);
   };
+
+  useEffect(() => {
+    const handleKeyboardEvent = () => {
+      if (isFocused && inputRef.current) {
+        const inputRect = inputRef.current.getBoundingClientRect();
+        const windowWidth = window.innerWidth;
+
+        // Check if the screen is a mobile screen (adjust the threshold as needed)
+        const isMobile = windowWidth <= 768;
+
+        // Check if the keyboard is covering the input field on mobile screens
+        if (isMobile && inputRect.bottom > window.innerHeight) {
+          window.scrollBy(0, inputRect.bottom - window.innerHeight);
+        }
+      }
+    };
+
+    window.addEventListener("resize", handleKeyboardEvent);
+
+    return () => {
+      window.removeEventListener("resize", handleKeyboardEvent);
+    };
+  }, [isFocused]);
 
   return (
     <>
