@@ -8,6 +8,7 @@ body {
 
 @media only screen and (max-width: 600px) {
   body {
+    @apply bg-neutral-950 text-white;
     min-height: 100vh;
     min-height: fill-available;
     min-height: -webkit-fill-available;
