@@ -143,7 +143,7 @@ const ChatWithNft = ({
 
   return (
     <div ref={ref}>
-      <div className="chat-messages mx-auto max-w-4xl w-full mt-20 min-h-[calc(100dvh-84px)] px-6 sm:px-0 pb-40">
+      <div className="chat-messages mx-auto max-w-4xl w-full mt-20 min-h-[calc(85dvh-84px)] md:min-h-[calc(100dvh-84px)] px-6 sm:px-0 pb-40">
         <div className="flex items-center gap-4">
           <div className="relative inline-block overflow-hidden rounded-2xl h-16 w-16 p-1  transition ease-in-out duration-300">
             <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)] bg-white/30" />
