@@ -49,15 +49,10 @@ const InputSpotlightBorder = ({
   useEffect(() => {
     const handleKeyboardEvent = () => {
       if (isFocused && inputRef.current) {
-        const inputRect = inputRef.current.getBoundingClientRect();
         const windowWidth = window.innerWidth;
-
-        // Check if the screen is a mobile screen (adjust the threshold as needed)
         const isMobile = windowWidth <= 768;
-
-        // Check if the keyboard is covering the input field on mobile screens
-        if (isMobile && inputRect.bottom > window.innerHeight) {
-          window.scrollBy(0, inputRect.bottom - window.innerHeight);
+        if (isMobile) {
+          window.scrollBy(0, document.body.scrollHeight);
         }
       }
     };
