@@ -7,17 +7,14 @@ body {
 }
 
 @media only screen and (max-width: 600px) {
-  html {
-    overflow: hidden;
-    width: 100%;
-  }
-
   body {
-    height: 100dvh;
-    width: 100%;
-    position: fixed;
-    overflow-y: scroll;
-    -webkit-overflow-scrolling: touch;
+    min-height: 100vh;
+    min-height: fill-available;
+    min-height: -webkit-fill-available;
+  }
+  html {
+    height: fill-available;
+    height: -webkit-fill-available;
   }
 }
 
