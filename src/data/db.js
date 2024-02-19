@@ -106,6 +106,96 @@ async function getCreditsForNFT(nftAddress) {
   }
 }
 
+// Multipliers for species and class
+const speciesMultipliers = {
+  Human: 1,
+  Elf: 1.1,
+  Dwarf: 1.2,
+  Halfling: 1.1,
+  Dragonborn: 1,
+  Gnome: 1.1,
+  'Half-Elf': 1,
+  'Half-Orc': 0.8,
+  Tiefling: 0.8,
+};
+
+const classMultipliers = {
+  Acolyte: 0.8,
+  Charlatan: 1.5,
+  'Criminal/Spy': 1.3,
+  Entertainer: 1.2,
+  'Folk Hero': 1,
+  'Guild Artisan': 1.2,
+  Hermit: 0.7,
+  Noble: 1.5,
+  Outlander: 1,
+  Sage: 1.1,
+  'Sailor/Pirate': 1,
+  Soldier: 1.1,
+  Urchin: 0.8,
+};
+
+const silverClaimCooldown = parseInt(process.env.NEXT_PUBLIC_SILVER_CLAIM_COOLDOWN_MINUTES, 10) || 1440; // Fallback to 1440 minutes (24 hours) if the environment variable is not set
+const silverIncrementAmount = parseInt(process.env.SILVER_INCREMENT_AMOUNT, 10) || 10; // Fallback to 10 if the environment variable is not set
+
+async function claimSilver(nftAddress, walletAddress, species, background) {
+  const speciesMultiplier = speciesMultipliers[species] || 1;
+  const classMultiplier = classMultipliers[background] || 1;
+
+  const totalMultiplier = speciesMultiplier * classMultiplier;
+
+  const currentTime = new Date();
+  const selectText = `
+    SELECT silver, last_claimed FROM silver_claims WHERE nft_address = $1 AND wallet_address = $2
+  `;
+  const { rows } = await pool.query(selectText, [nftAddress, walletAddress]);
+
+  if (rows.length === 0) {
+    const initialSilver = parseFloat((silverIncrementAmount * totalMultiplier).toFixed(2));
+    const insertText = `
+      INSERT INTO silver_claims (nft_address, wallet_address, silver, last_claimed)
+      VALUES ($1, $2, $3, $4)
+    `;
+    await pool.query(insertText, [nftAddress, walletAddress, initialSilver, currentTime]);
+    return { silver: initialSilver, lastClaimed: currentTime };
+  } else {
+    const lastClaimed = new Date(rows[0].last_claimed);
+    const minutesDiff = (currentTime - lastClaimed) / (1000 * 60);
+    if (minutesDiff >= silverClaimCooldown) {
+      const currentSilver = parseFloat(rows[0].silver);
+      const incrementSilver = parseFloat((silverIncrementAmount * totalMultiplier).toFixed(2));
+      const newSilver = parseFloat((currentSilver + incrementSilver).toFixed(2));
+      const updateText = `
+        UPDATE silver_claims SET silver = $3, last_claimed = $4
+        WHERE nft_address = $1 AND wallet_address = $2
+      `;
+      await pool.query(updateText, [nftAddress, walletAddress, newSilver, currentTime]);
+      return { silver: newSilver, lastClaimed: currentTime };
+    } else {
+      return { silver: rows[0].silver, lastClaimed: rows[0].last_claimed };
+    }
+  }
+}
+
+// Add this new function in db.js
+async function getSilverBalance(nftAddress, walletAddress) {
+  const selectText = `
+    SELECT silver, last_claimed FROM silver_claims WHERE nft_address = $1 AND wallet_address = $2
+  `;
+  try {
+    const { rows } = await pool.query(selectText, [nftAddress, walletAddress]);
+    if (rows.length > 0) {
+      return { silver: rows[0].silver, lastClaimed: rows[0].last_claimed };
+    } else {
+      // If no record exists, return a default value for silver and last_claimed
+      return { silver: 0, lastClaimed: null };
+    }
+  } catch (err) {
+    console.error("Error fetching silver balance", err.stack);
+    throw err;
+  }
+}
+
 module.exports = {
   insertChatHistory,
   ensureCreditsForNFT,
@@ -113,4 +203,6 @@ module.exports = {
   deductCredits,
   getCreditsForNFT,
   resetCreditsMinutes,
+  claimSilver,
+  getSilverBalance,
 };
