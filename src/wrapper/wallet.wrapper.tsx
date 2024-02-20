@@ -29,9 +29,9 @@ export default function WalletWrapper({
     ],
     [network]
   );
-
+  
   return (
-    <ConnectionProvider endpoint="https://api.metaplex.solana.com/">
+    <ConnectionProvider endpoint="https://rpc.helius.xyz/?api-key=1bd7151b-2c57-45f5-8172-b32538120d8e">
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
           <MetaplexProvider>{children}</MetaplexProvider>
