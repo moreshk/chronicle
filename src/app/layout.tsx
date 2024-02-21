@@ -8,7 +8,7 @@ import { NFTCollectionProvider } from "@/context/nftCollection.context";
 import { ConnectWalletButton } from "@/components/connectWalletButton";
 import { CreditProvider } from "@/wrapper/credits.wrapper";
 import { ShowCredits } from "@/components/showCradits";
-
+import "web-streams-polyfill";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
