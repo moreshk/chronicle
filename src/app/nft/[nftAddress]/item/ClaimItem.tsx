@@ -1,18 +1,44 @@
 "use client";
 import { useState, FC } from "react";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 type ClaimItemProps = {
   currentGold: number;
+  nftAddress: string; // Add this line
 };
 
-const ClaimItem: FC<ClaimItemProps> = ({ currentGold }) => {
+const ClaimItem: FC<ClaimItemProps> = ({ currentGold, nftAddress }) => {
 
   const [showChat, setShowChat] = useState(false);
+  // Inside the ClaimItem component
+  const { publicKey } = useWallet();
 
-  const handleGoldButtonClick = (goldAmount: number) => {
-    // You can handle the gold button click here
-    console.log(`${goldAmount} Gold button clicked`);
-    setShowChat(true);
+  const handleGoldButtonClick = async (goldAmount: number) => {
+    if (publicKey) {
+      try {
+        const response = await fetch('/api/deduct-silver', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            nftAddress: nftAddress, // You need to pass this prop to the component
+            walletAddress: publicKey.toBase58(),
+            amount: goldAmount,
+          }),
+        });
+        const data = await response.json();
+        if (response.ok) {
+          console.log(`${goldAmount} Gold button clicked, silver deducted`);
+          setShowChat(true);
+          // Update local state or re-fetch silver balance to reflect the change
+        } else {
+          throw new Error(data.error || 'Failed to deduct silver');
+        }
+      } catch (error) {
+        console.error('Error deducting silver', error);
+      }
+    }
   };
 
   return (

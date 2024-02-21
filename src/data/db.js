@@ -196,6 +196,42 @@ async function getSilverBalance(nftAddress, walletAddress) {
   }
 }
 
+// Add this function in db.js
+async function deductSilver(nftAddress, walletAddress, amount) {
+  // Start a transaction
+  await pool.query('BEGIN');
+
+  const selectText = `
+    SELECT silver FROM silver_claims WHERE nft_address = $1 AND wallet_address = $2 FOR UPDATE;
+  `;
+  const { rows: selectRows } = await pool.query(selectText, [nftAddress, walletAddress]);
+
+  let updateResult;
+  if (selectRows.length > 0) {
+    // If a record exists, update it
+    const updateText = `
+      UPDATE silver_claims
+      SET silver = silver - $3
+      WHERE nft_address = $1 AND wallet_address = $2
+      RETURNING silver;
+    `;
+    updateResult = await pool.query(updateText, [nftAddress, walletAddress, amount]);
+  } else {
+    // If no record exists, insert a new one with negative silver amount
+    const insertText = `
+      INSERT INTO silver_claims (nft_address, wallet_address, silver, last_claimed)
+      VALUES ($1, $2, $3 * -1, NOW())
+      RETURNING silver;
+    `;
+    updateResult = await pool.query(insertText, [nftAddress, walletAddress, amount]);
+  }
+
+  // Commit the transaction
+  await pool.query('COMMIT');
+
+  return updateResult.rows.length > 0; // Returns true if the update or insert was successful, false otherwise
+}
+
 module.exports = {
   insertChatHistory,
   ensureCreditsForNFT,
@@ -205,4 +241,5 @@ module.exports = {
   resetCreditsMinutes,
   claimSilver,
   getSilverBalance,
+  deductSilver,
 };

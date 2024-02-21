@@ -84,6 +84,7 @@ const Page = ({
       return (
         <ClaimItem
           currentGold={parseFloat(currentGoldValue)}
+          nftAddress={nftAddress} // Add this line
         />
       );
     }
