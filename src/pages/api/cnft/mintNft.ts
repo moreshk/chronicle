@@ -1,30 +1,28 @@
-import { cNftConfig } from "@/cnftConfig"
 import { umi } from "@/utils/umi"
 import { createSignerFromKeypair, publicKey, signerIdentity } from "@metaplex-foundation/umi"
 import { NextApiRequest, NextApiResponse } from 'next';
 import { fetchMerkleTree, mintToCollectionV1 } from "@metaplex-foundation/mpl-bubblegum";
-import { encode } from "bs58";
+import { decode, encode } from "bs58";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === "POST") {
         const { walletAddress } = req.body;
         try {
-            const keyPair = umi.eddsa.createKeypairFromSecretKey(cNftConfig.walletKey)
+            const keyPair = umi.eddsa.createKeypairFromSecretKey(decode(process.env.WALLET_PRIVATE_KEY!))
             const signer = createSignerFromKeypair({ eddsa: umi.eddsa }, keyPair)
             umi.use(signerIdentity(signer))
-
-            const merkleTreeAccount = await fetchMerkleTree(umi, cNftConfig.merkleTree)
+            const merkleTreeAccount = await fetchMerkleTree(umi, publicKey(process.env.MERKLE_TREE!))
 
             const nftItemJsonObject = {
-                name: cNftConfig.COLLECTION_NAME,
-                symbol: cNftConfig.COLLECTION_SYMBOL,
-                description: cNftConfig.COLLECTION_DESCRIPTION,
+                symbol: process.env.COLLECTION_SYMBOL,
+                name: process.env.COLLECTION_NAME!,
+                description: process.env.COLLECTION_DESCRIPTION,
                 seller_fee_basis_points: 5.5 * 100,
-                image: 'https://yellow-wonderful-finch-712.mypinata.cloud/ipfs/QmcpEdSpcgigEbdaJG94nAfHV2eBgxwqg1Poxdiq93WcZV/1.png',
-                external_url: 'https://chronicle.quest/',
+                image: 'https://nftstorage.link/ipfs/bafybeicvrfz5bpscllthtnagufy27wypnduwblprf5vtybtzkmpwn3ltgi',
+                external_url: 'https://play.chronicle.quest/',
                 attributes: [{
                     trait_type: 'Status',
-                    value: 'Early adaptooooooooooors',
+                    value: 'CHRON ITEMS',
                 },
                 {
                     trait_type: 'Minted',
@@ -34,7 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     category: 'image',
                     files: [
                         {
-                            file: 'https://yellow-wonderful-finch-712.mypinata.cloud/ipfs/QmcpEdSpcgigEbdaJG94nAfHV2eBgxwqg1Poxdiq93WcZV/1.png',
+                            file: 'https://nftstorage.link/ipfs/bafybeicvrfz5bpscllthtnagufy27wypnduwblprf5vtybtzkmpwn3ltgi',
                             type: 'image/png',
                         },
                     ],
@@ -45,14 +43,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const mint = await mintToCollectionV1(umi, {
                 leafOwner: publicKey(walletAddress),
                 merkleTree: merkleTreeAccount.publicKey,
-                collectionMint: cNftConfig.collection,
+                collectionMint: publicKey(process.env.COLLECTION_ADDRESS!),
                 metadata: {
-                    name: "test nft Collection",
+                    name: "Chronicle Item",
                     uri: nftItemJsonUri,
                     sellerFeeBasisPoints: 5.5 * 100,
-                    collection: { key: cNftConfig.collection, verified: false },
+                    collection: { key: publicKey(process.env.COLLECTION_ADDRESS!), verified: false },
                     creators: [{
-                        "address": publicKey("GknJwfsZG3tsdj1XNNjgoL5DeJqZyh94zdJoQuy2gxpm"),
+                        "address": keyPair.publicKey,
                         "verified": false,
                         "share": 100
                     }],

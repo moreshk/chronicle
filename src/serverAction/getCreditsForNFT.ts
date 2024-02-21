@@ -90,3 +90,23 @@ export const getMintcNftAPI = async (walletAddress: string) => {
         return undefined
     }
 }
+
+export const deductGold = async (nftAddress: string, walletAddress: string, amount: number) => {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/deduct-silver`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nftAddress, walletAddress, amount, }),
+        });
+        if (response.ok) {
+            console.log(response)
+            const newResponse = await getMintcNftAPI(walletAddress)
+            return newResponse
+        } else {
+            return false
+        }
+    } catch (error) {
+        console.log("🚀 ~ deductGold ~ error:", error)
+        return false
+    }
+}

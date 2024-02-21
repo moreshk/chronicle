@@ -51,3 +51,17 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+.globe {
+  position: absolute;
+  top: calc(50% - 225px);
+  left: calc(50% - 225px);
+  width: 450px;
+  height: 450px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 50px rgb(120, 129, 129),
+    inset 20px 0 80px rgb(120, 129, 129), inset -20px 0 80px rgb(120, 129, 129),
+    inset 20px 0 300px rgb(120, 129, 129),
+    inset -20px 0 300px rgb(120, 129, 129), 0 0 50px rgb(120, 129, 129),
+    -10px 0 80px rgb(120, 129, 129), 10px 0 80px rgb(120, 129, 129);
+}

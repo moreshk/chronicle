@@ -1,4 +1,3 @@
-import { cNftConfig } from "@/cnftConfig";
 import { umi } from "@/utils/umi";
 import { createTree } from "@metaplex-foundation/mpl-bubblegum";
 import {
@@ -7,12 +6,13 @@ import {
   signerIdentity,
 } from "@metaplex-foundation/umi";
 import { NextApiRequest, NextApiResponse } from 'next';
+import { decode } from "bs58";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "GET") {
     try {
       const keyPair = umi.eddsa.createKeypairFromSecretKey(
-        cNftConfig.walletKey
+        decode(process.env.WALLET_PRIVATE_KEY!)
       );
       const signer = createSignerFromKeypair({ eddsa: umi.eddsa }, keyPair);
       umi.use(signerIdentity(signer));

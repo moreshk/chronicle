@@ -4,8 +4,7 @@ import { mplTokenMetadata } from '@metaplex-foundation/mpl-token-metadata'
 import { nftStorageUploader } from '@metaplex-foundation/umi-uploader-nft-storage'
 import { dasApi } from '@metaplex-foundation/digital-asset-standard-api';
 
-export const umi = createUmi(process.env.RPC!)
+export const clientUmi = createUmi('https://rpc.helius.xyz/?api-key=1bd7151b-2c57-45f5-8172-b32538120d8e')
     .use(mplTokenMetadata())
     .use(mplBubblegum())
-    .use(nftStorageUploader({ token: process.env.NFT_STORAGE_API_TOKEN! }))
     .use(dasApi())
