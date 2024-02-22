@@ -82,7 +82,7 @@ const Page = ({
     const handleClaimSilver = async () => {
         console.log(species);
         console.log(background);
-        
+
         if (publicKey && species && background) {
             const response = await fetch('/api/claim-silver', {
                 method: 'POST',
@@ -177,6 +177,7 @@ const Page = ({
 
             // console.log(species);
             // console.log(background);
+            const buttonBaseStyle = "inline-flex h-12 items-center justify-center rounded-lg border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 whitespace-nowrap";
 
             return (
                 <main className="items-center justify-center px-4 py-24 sm:py-24 sm:p-24">
@@ -195,21 +196,29 @@ const Page = ({
                         {nftDetails.json?.description}
                     </p>
                     <div className="flex justify-center items-end gap-4 mt-6 flex-col sm:flex-row w-full">
+
                         <Link
                             href={`/nft/${nftAddress}/chat`}
-                            className="inline-flex h-12 animate-background-shine items-center justify-center rounded-lg border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 w-full sm:w-40"
+                            className={`${buttonBaseStyle} w-full sm:w-auto sm:min-w-[12rem] animate-background-shine`}
                         >
                             Chat
                         </Link>
 
-
                         <button
                             onClick={handleClaimSilver}
                             disabled={!canClaimSilver}
-                            className={`inline-flex h-12 items-center justify-center rounded-lg border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 w-full sm:w-40 ${canClaimSilver ? 'animate-background-shine' : 'opacity-50 cursor-not-allowed'}`}
+                            className={`${buttonBaseStyle} w-full sm:w-auto sm:min-w-[12rem] ${canClaimSilver ? 'animate-background-shine' : 'opacity-50 cursor-not-allowed'}`}
                         >
                             Collect Gold
                         </button>
+
+                        <Link
+                            href={`/nft/${nftAddress}/quest`}
+                            className={`${buttonBaseStyle} w-full sm:w-auto sm:min-w-[12rem] animate-background-shine`}
+                        >
+                            Solo Adventure
+                        </Link>
+
 
                         {/* <Link
                             href={`/nft/${nftAddress}/item`}
@@ -229,15 +238,15 @@ const Page = ({
                                 </div>
                             )}
 
-{/* Gold attribute display with Silver balance */}
-{attributes.Gold !== undefined && (
-    <div className="grid grid-cols-2 gap-1">
-        <p className="font-bold"> Current Gold : </p>
-        {/* Parse both values as floats and then add them */}
-        {/* <p>{(parseFloat(attributes.Gold) + parseFloat(silverBalance)).toFixed(2)}</p> */}
-        <p>{(parseFloat(attributes.Gold as string || '0') + parseFloat(silverBalance.toString())).toFixed(2)}</p>
-    </div>
-)}
+                            {/* Gold attribute display with Silver balance */}
+                            {attributes.Gold !== undefined && (
+                                <div className="grid grid-cols-2 gap-1">
+                                    <p className="font-bold"> Current Gold : </p>
+                                    {/* Parse both values as floats and then add them */}
+                                    {/* <p>{(parseFloat(attributes.Gold) + parseFloat(silverBalance)).toFixed(2)}</p> */}
+                                    <p>{(parseFloat(attributes.Gold as string || '0') + parseFloat(silverBalance.toString())).toFixed(2)}</p>
+                                </div>
+                            )}
                             {/* Displaying other attributes except Gold */}
                             {Object.entries(attributes).filter(([key]) => key !== 'Gold').map(([key, value]) => (
                                 <div className="grid grid-cols-2 gap-1" key={key}>
