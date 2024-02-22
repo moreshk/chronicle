@@ -9,6 +9,7 @@ import { ConnectWalletButton } from "@/components/connectWalletButton";
 import { CreditProvider } from "@/wrapper/credits.wrapper";
 import { ShowCredits } from "@/components/showCradits";
 import "web-streams-polyfill";
+import { CNFTCollectionProvider } from "@/context/cnftCollection.context";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -28,10 +29,12 @@ export default function RootLayout({
           <NetworkProvider>
             <WalletWrapper>
               <NFTCollectionProvider>
-                <div className="absolute top-4 right-4 sm:top-10 sm:right-10">
-                  <ConnectWalletButton />
-                </div>
-                {children}
+                <CNFTCollectionProvider>
+                  <div className="absolute top-4 right-4 sm:top-10 sm:right-10">
+                    <ConnectWalletButton />
+                  </div>
+                  {children}
+                </CNFTCollectionProvider>
               </NFTCollectionProvider>
             </WalletWrapper>
           </NetworkProvider>

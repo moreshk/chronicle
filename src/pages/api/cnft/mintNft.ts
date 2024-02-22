@@ -43,12 +43,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const mint = await mintToCollectionV1(umi, {
                 leafOwner: publicKey(walletAddress),
                 merkleTree: merkleTreeAccount.publicKey,
-                collectionMint: publicKey(process.env.COLLECTION_ADDRESS!),
+                collectionMint: publicKey(process.env.NEXT_PUBLIC_COLLECTION_ADDRESS!),
                 metadata: {
                     name: "Chronicle Item",
                     uri: nftItemJsonUri,
                     sellerFeeBasisPoints: 5.5 * 100,
-                    collection: { key: publicKey(process.env.COLLECTION_ADDRESS!), verified: false },
+                    collection: { key: publicKey(process.env.NEXT_PUBLIC_COLLECTION_ADDRESS!), verified: false },
                     creators: [{
                         "address": keyPair.publicKey,
                         "verified": false,
