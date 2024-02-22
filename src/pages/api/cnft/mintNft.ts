@@ -1,7 +1,7 @@
 import { umi } from "@/utils/umi"
 import { createSignerFromKeypair, publicKey, signerIdentity } from "@metaplex-foundation/umi"
 import { NextApiRequest, NextApiResponse } from 'next';
-import { fetchMerkleTree, mintToCollectionV1 } from "@metaplex-foundation/mpl-bubblegum";
+import { mintToCollectionV1 } from "@metaplex-foundation/mpl-bubblegum";
 import { decode, encode } from "bs58";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -11,7 +11,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const keyPair = umi.eddsa.createKeypairFromSecretKey(decode(process.env.WALLET_PRIVATE_KEY!))
             const signer = createSignerFromKeypair({ eddsa: umi.eddsa }, keyPair)
             umi.use(signerIdentity(signer))
-            const merkleTreeAccount = await fetchMerkleTree(umi, publicKey(process.env.MERKLE_TREE!))
 
             const nftItemJsonObject = {
                 symbol: process.env.COLLECTION_SYMBOL,
@@ -42,7 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const nftItemJsonUri = await umi.uploader.uploadJson(nftItemJsonObject)
             const mint = await mintToCollectionV1(umi, {
                 leafOwner: publicKey(walletAddress),
-                merkleTree: merkleTreeAccount.publicKey,
+                merkleTree: publicKey(process.env.MERKLE_TREE!),
                 collectionMint: publicKey(process.env.NEXT_PUBLIC_COLLECTION_ADDRESS!),
                 metadata: {
                     name: "Chronicle Item",
