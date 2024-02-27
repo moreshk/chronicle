@@ -212,12 +212,12 @@ const Page = ({
                             Collect Gold
                         </button>
 
-                        {/* <Link
+                        <Link
                             href={`/nft/${nftAddress}/quest`}
                             className={`${buttonBaseStyle} w-full sm:w-auto sm:min-w-[12rem] animate-background-shine`}
                         >
                             Solo Adventure
-                        </Link> */}
+                        </Link>
 
 
                         {/* <Link
