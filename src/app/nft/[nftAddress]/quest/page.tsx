@@ -12,6 +12,7 @@ const Page = ({
 }) => {
   const { nfts, error, isNftLoaded } = useNFT();
   const { connected } = useWallet();
+  const { publicKey } = useWallet(); // publicKey is the wallet address
   if (error) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center p-24">
@@ -54,6 +55,8 @@ const Page = ({
             description={nftDetails.json.description}
             title={nftDetails.json.name}
             properties={nftDetails.json.attributes}
+            nftAddress={nftAddress}
+            walletAddress={publicKey?.toBase58()} // Convert publicKey to string
           />
         );
       }

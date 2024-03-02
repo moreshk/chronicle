@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@azure/storage-blob':
+    specifier: ^12.17.0
+    version: 12.17.0
   '@metaplex-foundation/digital-asset-standard-api':
     specifier: ^1.0.3
     version: 1.0.3(@metaplex-foundation/umi@0.9.1)
@@ -40,7 +43,7 @@ dependencies:
     version: 0.9.35(@solana/web3.js@1.90.0)(bs58@5.0.0)(react-dom@18.2.0)(react-native@0.73.4)(react@18.2.0)
   '@solana/wallet-adapter-wallets':
     specifier: ^0.19.26
-    version: 0.19.26(@babel/runtime@7.23.9)(@solana/web3.js@1.90.0)(bs58@5.0.0)(react-dom@18.2.0)(react-native@0.73.4)(react@18.2.0)(tslib@2.6.2)
+    version: 0.19.26(@azure/storage-blob@12.17.0)(@babel/runtime@7.23.9)(@solana/web3.js@1.90.0)(bs58@5.0.0)(react-dom@18.2.0)(react-native@0.73.4)(react@18.2.0)(tslib@2.6.2)
   '@solana/web3.js':
     specifier: ^1.90.0
     version: 1.90.0
@@ -166,6 +169,107 @@ packages:
 
   /@assemblyscript/loader@0.9.4:
     resolution: {integrity: sha512-HazVq9zwTVwGmqdwYzu7WyQ6FQVZ7SwET0KKQuKm55jD0IfUpZgN0OPIiZG3zV1iSrVYcN0bdwLRXI/VNCYsUA==}
+    dev: false
+
+  /@azure/abort-controller@1.1.0:
+    resolution: {integrity: sha512-TrRLIoSQVzfAJX9H1JeFjzAoDGcoK1IYX1UImfceTZpsyYfWr09Ss1aHW1y5TrrR3iq6RZLBwJ3E24uwPhwahw==}
+    engines: {node: '>=12.0.0'}
+    dependencies:
+      tslib: 2.6.2
+    dev: false
+
+  /@azure/abort-controller@2.0.0:
+    resolution: {integrity: sha512-RP/mR/WJchR+g+nQFJGOec+nzeN/VvjlwbinccoqfhTsTHbb8X5+mLDp48kHT0ueyum0BNSwGm0kX0UZuIqTGg==}
+    engines: {node: '>=18.0.0'}
+    dependencies:
+      tslib: 2.6.2
+    dev: false
+
+  /@azure/core-auth@1.6.0:
+    resolution: {integrity: sha512-3X9wzaaGgRaBCwhLQZDtFp5uLIXCPrGbwJNWPPugvL4xbIGgScv77YzzxToKGLAKvG9amDoofMoP+9hsH1vs1w==}
+    engines: {node: '>=18.0.0'}
+    dependencies:
+      '@azure/abort-controller': 2.0.0
+      '@azure/core-util': 1.7.0
+      tslib: 2.6.2
+    dev: false
+
+  /@azure/core-http@3.0.4:
+    resolution: {integrity: sha512-Fok9VVhMdxAFOtqiiAtg74fL0UJkt0z3D+ouUUxcRLzZNBioPRAMJFVxiWoJljYpXsRi4GDQHzQHDc9AiYaIUQ==}
+    engines: {node: '>=14.0.0'}
+    dependencies:
+      '@azure/abort-controller': 1.1.0
+      '@azure/core-auth': 1.6.0
+      '@azure/core-tracing': 1.0.0-preview.13
+      '@azure/core-util': 1.7.0
+      '@azure/logger': 1.0.4
+      '@types/node-fetch': 2.6.11
+      '@types/tunnel': 0.0.3
+      form-data: 4.0.0
+      node-fetch: 2.7.0
+      process: 0.11.10
+      tslib: 2.6.2
+      tunnel: 0.0.6
+      uuid: 8.3.2
+      xml2js: 0.5.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /@azure/core-lro@2.6.0:
+    resolution: {integrity: sha512-PyRNcaIOfMgoUC01/24NoG+k8O81VrKxYARnDlo+Q2xji0/0/j2nIt8BwQh294pb1c5QnXTDPbNR4KzoDKXEoQ==}
+    engines: {node: '>=18.0.0'}
+    dependencies:
+      '@azure/abort-controller': 2.0.0
+      '@azure/core-util': 1.7.0
+      '@azure/logger': 1.0.4
+      tslib: 2.6.2
+    dev: false
+
+  /@azure/core-paging@1.5.0:
+    resolution: {integrity: sha512-zqWdVIt+2Z+3wqxEOGzR5hXFZ8MGKK52x4vFLw8n58pR6ZfKRx3EXYTxTaYxYHc/PexPUTyimcTWFJbji9Z6Iw==}
+    engines: {node: '>=14.0.0'}
+    dependencies:
+      tslib: 2.6.2
+    dev: false
+
+  /@azure/core-tracing@1.0.0-preview.13:
+    resolution: {integrity: sha512-KxDlhXyMlh2Jhj2ykX6vNEU0Vou4nHr025KoSEiz7cS3BNiHNaZcdECk/DmLkEB0as5T7b/TpRcehJ5yV6NeXQ==}
+    engines: {node: '>=12.0.0'}
+    dependencies:
+      '@opentelemetry/api': 1.7.0
+      tslib: 2.6.2
+    dev: false
+
+  /@azure/core-util@1.7.0:
+    resolution: {integrity: sha512-Zq2i3QO6k9DA8vnm29mYM4G8IE9u1mhF1GUabVEqPNX8Lj833gdxQ2NAFxt2BZsfAL+e9cT8SyVN7dFVJ/Hf0g==}
+    engines: {node: '>=18.0.0'}
+    dependencies:
+      '@azure/abort-controller': 2.0.0
+      tslib: 2.6.2
+    dev: false
+
+  /@azure/logger@1.0.4:
+    resolution: {integrity: sha512-ustrPY8MryhloQj7OWGe+HrYx+aoiOxzbXTtgblbV3xwCqpzUK36phH3XNHQKj3EPonyFUuDTfR3qFhTEAuZEg==}
+    engines: {node: '>=14.0.0'}
+    dependencies:
+      tslib: 2.6.2
+    dev: false
+
+  /@azure/storage-blob@12.17.0:
+    resolution: {integrity: sha512-sM4vpsCpcCApagRW5UIjQNlNylo02my2opgp0Emi8x888hZUvJ3dN69Oq20cEGXkMUWnoCrBaB0zyS3yeB87sQ==}
+    engines: {node: '>=14.0.0'}
+    dependencies:
+      '@azure/abort-controller': 1.1.0
+      '@azure/core-http': 3.0.4
+      '@azure/core-lro': 2.6.0
+      '@azure/core-paging': 1.5.0
+      '@azure/core-tracing': 1.0.0-preview.13
+      '@azure/logger': 1.0.4
+      events: 3.3.0
+      tslib: 2.6.2
+    transitivePeerDependencies:
+      - encoding
     dev: false
 
   /@babel/code-frame@7.23.5:
@@ -2268,15 +2372,15 @@ packages:
       chalk: 4.1.2
     dev: false
 
-  /@jnwng/walletconnect-solana@0.2.0(@solana/web3.js@1.90.0):
+  /@jnwng/walletconnect-solana@0.2.0(@azure/storage-blob@12.17.0)(@solana/web3.js@1.90.0):
     resolution: {integrity: sha512-nyRq0xLEj9i2J4UXQ0Mr4KzsooTMbLu0ewHOqdQV7iZE0PfbtKa8poTSF4ZBAQD8hoMHEx+I7zGFCNMI9BTrTA==}
     peerDependencies:
       '@solana/web3.js': ^1.63.0
     dependencies:
       '@solana/web3.js': 1.90.0
       '@walletconnect/qrcode-modal': 1.8.0
-      '@walletconnect/sign-client': 2.11.1
-      '@walletconnect/utils': 2.11.1
+      '@walletconnect/sign-client': 2.11.1(@azure/storage-blob@12.17.0)
+      '@walletconnect/utils': 2.11.1(@azure/storage-blob@12.17.0)
       bs58: 5.0.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -3188,6 +3292,11 @@ packages:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.17.1
+    dev: false
+
+  /@opentelemetry/api@1.7.0:
+    resolution: {integrity: sha512-AdY5wvN0P2vXBi3b29hxZgSFvdhdxPB9+f0B6s//P9Q8nibRWeA3cHm8UmLpio9ABigkVHJ5NMPk+Mz8VCCyrw==}
+    engines: {node: '>=8.0.0'}
     dev: false
 
   /@parcel/watcher-android-arm64@2.4.0:
@@ -4588,13 +4697,13 @@ packages:
       '@solana/web3.js': 1.90.0
     dev: false
 
-  /@solana/wallet-adapter-walletconnect@0.1.16(@solana/web3.js@1.90.0):
+  /@solana/wallet-adapter-walletconnect@0.1.16(@azure/storage-blob@12.17.0)(@solana/web3.js@1.90.0):
     resolution: {integrity: sha512-jNaQwSho8hT7gF1ifePE8TJc1FULx8jCF16KX3fZPtzXDxKrj0R4VUpHMGcw4MlDknrnZNLOJAVvyiawAkPCRQ==}
     engines: {node: '>=16'}
     peerDependencies:
       '@solana/web3.js': ^1.77.3
     dependencies:
-      '@jnwng/walletconnect-solana': 0.2.0(@solana/web3.js@1.90.0)
+      '@jnwng/walletconnect-solana': 0.2.0(@azure/storage-blob@12.17.0)(@solana/web3.js@1.90.0)
       '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.90.0)
       '@solana/web3.js': 1.90.0
     transitivePeerDependencies:
@@ -4616,7 +4725,7 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@solana/wallet-adapter-wallets@0.19.26(@babel/runtime@7.23.9)(@solana/web3.js@1.90.0)(bs58@5.0.0)(react-dom@18.2.0)(react-native@0.73.4)(react@18.2.0)(tslib@2.6.2):
+  /@solana/wallet-adapter-wallets@0.19.26(@azure/storage-blob@12.17.0)(@babel/runtime@7.23.9)(@solana/web3.js@1.90.0)(bs58@5.0.0)(react-dom@18.2.0)(react-native@0.73.4)(react@18.2.0)(tslib@2.6.2):
     resolution: {integrity: sha512-sOHQNX5YArh2dOHtosSUEfEc/xSzXDZN3h1CCgetJW4Dd3Lpj4RqzCmjVb3oslAH+IBZ5L9o5NKkvjN5R68R7g==}
     engines: {node: '>=16'}
     peerDependencies:
@@ -4656,7 +4765,7 @@ packages:
       '@solana/wallet-adapter-trezor': 0.1.0(@solana/web3.js@1.90.0)(react-native@0.73.4)(tslib@2.6.2)
       '@solana/wallet-adapter-trust': 0.1.13(@solana/web3.js@1.90.0)
       '@solana/wallet-adapter-unsafe-burner': 0.1.7(@solana/web3.js@1.90.0)
-      '@solana/wallet-adapter-walletconnect': 0.1.16(@solana/web3.js@1.90.0)
+      '@solana/wallet-adapter-walletconnect': 0.1.16(@azure/storage-blob@12.17.0)(@solana/web3.js@1.90.0)
       '@solana/wallet-adapter-xdefi': 0.1.7(@solana/web3.js@1.90.0)
       '@solana/web3.js': 1.90.0
     transitivePeerDependencies:
@@ -5531,6 +5640,12 @@ packages:
     resolution: {integrity: sha512-9aEbYZ3TbYMznPdcdr3SmIrLXwC/AKZXQeCf9Pgao5CKb8CyHuEX5jzWPTkvregvhRJHcpRO6BFoGW9ycaOkYw==}
     dev: false
 
+  /@types/tunnel@0.0.3:
+    resolution: {integrity: sha512-sOUTGn6h1SfQ+gbgqC364jLFBw2lnFqkgF3q0WovEHRLMrVD1sd5aufqi/aJObLekJO+Aq5z646U4Oxy6shXMA==}
+    dependencies:
+      '@types/node': 20.11.19
+    dev: false
+
   /@types/uuid@8.3.4:
     resolution: {integrity: sha512-c/I8ZRb51j+pYGAu5CrFMRxqZ2ke4y2grEBO5AUjgSkSk+qT2Ea+OdWElz/OiMf5MNpn2b17kuVBwZLQJXzihw==}
     dev: false
@@ -5679,7 +5794,7 @@ packages:
       detect-browser: 5.2.0
     dev: false
 
-  /@walletconnect/core@2.11.1:
+  /@walletconnect/core@2.11.1(@azure/storage-blob@12.17.0):
     resolution: {integrity: sha512-T57Vd7YdbHPsy3tthBuwrhaZNafN0+PqjISFRNeJy/bsKdXxpJg2hGSARuOTpCO7V6VcaatqlaSMuG3DrnG5rA==}
     dependencies:
       '@walletconnect/heartbeat': 1.2.1
@@ -5687,14 +5802,14 @@ packages:
       '@walletconnect/jsonrpc-types': 1.0.3
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/jsonrpc-ws-connection': 1.0.14
-      '@walletconnect/keyvaluestorage': 1.1.1
+      '@walletconnect/keyvaluestorage': 1.1.1(@azure/storage-blob@12.17.0)
       '@walletconnect/logger': 2.0.1
       '@walletconnect/relay-api': 1.0.9
       '@walletconnect/relay-auth': 1.0.4
       '@walletconnect/safe-json': 1.0.2
       '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.11.1
-      '@walletconnect/utils': 2.11.1
+      '@walletconnect/types': 2.11.1(@azure/storage-blob@12.17.0)
+      '@walletconnect/utils': 2.11.1(@azure/storage-blob@12.17.0)
       events: 3.3.0
       isomorphic-unfetch: 3.1.0
       lodash.isequal: 4.5.0
@@ -5774,7 +5889,7 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@walletconnect/keyvaluestorage@1.1.1:
+  /@walletconnect/keyvaluestorage@1.1.1(@azure/storage-blob@12.17.0):
     resolution: {integrity: sha512-V7ZQq2+mSxAq7MrRqDxanTzu2RcElfK1PfNYiaVnJgJ7Q7G7hTVwF8voIBx92qsRyGHZihrwNPHuZd1aKkd0rA==}
     peerDependencies:
       '@react-native-async-storage/async-storage': 1.x
@@ -5784,7 +5899,7 @@ packages:
     dependencies:
       '@walletconnect/safe-json': 1.0.2
       idb-keyval: 6.2.1
-      unstorage: 1.10.1(idb-keyval@6.2.1)
+      unstorage: 1.10.1(@azure/storage-blob@12.17.0)(idb-keyval@6.2.1)
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -5852,17 +5967,17 @@ packages:
       tslib: 1.14.1
     dev: false
 
-  /@walletconnect/sign-client@2.11.1:
+  /@walletconnect/sign-client@2.11.1(@azure/storage-blob@12.17.0):
     resolution: {integrity: sha512-s3oKSx6/F5X2WmkV1jfJImBFACf9Km5HpTb+n5q+mobJVpUQw/clvoVyIrNNppLhm1V1S/ylHXh0qCrDppDpCA==}
     dependencies:
-      '@walletconnect/core': 2.11.1
+      '@walletconnect/core': 2.11.1(@azure/storage-blob@12.17.0)
       '@walletconnect/events': 1.0.1
       '@walletconnect/heartbeat': 1.2.1
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/logger': 2.0.1
       '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.11.1
-      '@walletconnect/utils': 2.11.1
+      '@walletconnect/types': 2.11.1(@azure/storage-blob@12.17.0)
+      '@walletconnect/utils': 2.11.1(@azure/storage-blob@12.17.0)
       events: 3.3.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -5894,13 +6009,13 @@ packages:
     deprecated: 'WalletConnect''s v1 SDKs are now deprecated. Please upgrade to a v2 SDK. For details see: https://docs.walletconnect.com/'
     dev: false
 
-  /@walletconnect/types@2.11.1:
+  /@walletconnect/types@2.11.1(@azure/storage-blob@12.17.0):
     resolution: {integrity: sha512-UbdbX+d6MOK0AXKxt5imV3KvAcLVpZUHylaRDIP5ffwVylM/p4DHnKppil1Qq5N+IGDr3RsUwLGFkKjqsQYRKw==}
     dependencies:
       '@walletconnect/events': 1.0.1
       '@walletconnect/heartbeat': 1.2.1
       '@walletconnect/jsonrpc-types': 1.0.3
-      '@walletconnect/keyvaluestorage': 1.1.1
+      '@walletconnect/keyvaluestorage': 1.1.1(@azure/storage-blob@12.17.0)
       '@walletconnect/logger': 2.0.1
       events: 3.3.0
     transitivePeerDependencies:
@@ -5919,7 +6034,7 @@ packages:
       - supports-color
     dev: false
 
-  /@walletconnect/utils@2.11.1:
+  /@walletconnect/utils@2.11.1(@azure/storage-blob@12.17.0):
     resolution: {integrity: sha512-wRFDHN86dZ05mCET1H3912odIeQa8j7cZKxl1FlWRpV2YsILj9HCYSX6Uq2brwO02Kv2vryke44G1r8XI/LViA==}
     dependencies:
       '@stablelib/chacha20poly1305': 1.0.1
@@ -5930,7 +6045,7 @@ packages:
       '@walletconnect/relay-api': 1.0.9
       '@walletconnect/safe-json': 1.0.2
       '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.11.1
+      '@walletconnect/types': 2.11.1(@azure/storage-blob@12.17.0)
       '@walletconnect/window-getters': 1.0.1
       '@walletconnect/window-metadata': 1.0.1
       detect-browser: 5.3.0
@@ -13609,6 +13724,10 @@ packages:
       eventemitter3: 4.0.7
     dev: false
 
+  /sax@1.3.0:
+    resolution: {integrity: sha512-0s+oAmw9zLl1V1cS9BtZN7JAd0cW5e0QH4W3LWEK6a4LaLEA2OTpGYWDY+6XasBLtz6wkm3u1xRw95mRuJ59WA==}
+    dev: false
+
   /scheduler@0.19.1:
     resolution: {integrity: sha512-n/zwRWRYSUj0/3g/otKDRPMh6qv2SYMWNq85IEa8iZyAv8od9zDYpGSnpBEjNgcMNq6Scbu5KfIPxNF72R/2EA==}
     dependencies:
@@ -14625,6 +14744,11 @@ packages:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
     dev: false
 
+  /tunnel@0.0.6:
+    resolution: {integrity: sha512-1h/Lnq9yajKY2PEbBadPXj3VxsDDu844OnaAo52UVmIzIvwwtBPIuNvkjuzBlTWpfJyUbG3ez0KSBibQkj4ojg==}
+    engines: {node: '>=0.6.11 <=0.7.0 || >=0.7.3'}
+    dev: false
+
   /tween-functions@1.2.0:
     resolution: {integrity: sha512-PZBtLYcCLtEcjL14Fzb1gSxPBeL7nWvGhO5ZFPGqziCcr8uvHp0NDmdjBchp6KHL+tExcg0m3NISmKxhU394dA==}
     dev: false
@@ -14857,7 +14981,7 @@ packages:
     engines: {node: '>= 0.8'}
     dev: false
 
-  /unstorage@1.10.1(idb-keyval@6.2.1):
+  /unstorage@1.10.1(@azure/storage-blob@12.17.0)(idb-keyval@6.2.1):
     resolution: {integrity: sha512-rWQvLRfZNBpF+x8D3/gda5nUCQL2PgXy2jNG4U7/Rc9BGEv9+CAJd0YyGCROUBKs9v49Hg8huw3aih5Bf5TAVw==}
     peerDependencies:
       '@azure/app-configuration': ^1.4.1
@@ -14898,6 +15022,7 @@ packages:
       idb-keyval:
         optional: true
     dependencies:
+      '@azure/storage-blob': 12.17.0
       anymatch: 3.1.3
       chokidar: 3.6.0
       destr: 2.0.3
@@ -15347,6 +15472,19 @@ packages:
     dependencies:
       bufferutil: 4.0.8
       utf-8-validate: 5.0.10
+    dev: false
+
+  /xml2js@0.5.0:
+    resolution: {integrity: sha512-drPFnkQJik/O+uPKpqSgr22mpuFHqKdbS835iAQrUC73L2F5WkboIRd63ai/2Yg6I1jzifPFKH2NTK+cfglkIA==}
+    engines: {node: '>=4.0.0'}
+    dependencies:
+      sax: 1.3.0
+      xmlbuilder: 11.0.1
+    dev: false
+
+  /xmlbuilder@11.0.1:
+    resolution: {integrity: sha512-fDlsI/kFEx7gLvbecc0/ohLG50fugQp8ryHzMTuW9vSa1GJ0XYWKnhsUx7oie3G98+r56aTQIUB4kht42R3JvA==}
+    engines: {node: '>=4.0'}
     dev: false
 
   /xmlhttprequest-ssl@2.0.0:

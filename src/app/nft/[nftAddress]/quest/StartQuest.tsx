@@ -2,16 +2,21 @@
 import { useState } from "react";
 import ChatWithQuestNft from "./ChatQuestNFT";
 
+
 const StartQuest = ({
   image,
   description,
   title,
   properties,
+  nftAddress,
+  walletAddress,
 }: {
   image: string;
   title: string;
   description: string;
   properties: { [key: string]: unknown; trait_type?: string; value?: string }[];
+  nftAddress: string;
+  walletAddress?: string;
 }) => {
   const [showChat, setShowChat] = useState(false);
 
@@ -23,6 +28,8 @@ const StartQuest = ({
           description={description}
           title={title}
           properties={properties}
+          nftAddress={nftAddress}
+          walletAddress={walletAddress}
         />
       ) : (
         <div className="mx-auto max-w-4xl w-full flex justify-center items-center min-h-screen p-6 ">
