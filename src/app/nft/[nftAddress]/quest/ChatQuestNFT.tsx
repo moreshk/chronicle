@@ -504,7 +504,7 @@ const ChatWithQuestNft = ({
                 className="flex gap-2 cursor-pointer items-center text-gray-50/85"
               >
                 <img src="/paint_brush.png" alt="Paintbrush" className="h-6 w-6" />
-                <p>Paint (Cost: Gold) </p>
+                <p>Paint (Cost: 1 Gold) </p>
                 {/* Display the current gold balance here */}
                 <span className="ml-2 text-sm">Current Gold: {currentGoldBalance.toFixed(2)}</span>
 
