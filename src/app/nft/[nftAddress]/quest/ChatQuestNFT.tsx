@@ -125,7 +125,7 @@ const ChatWithQuestNft = ({
 
 
   const paintbrushAction = async () => {
-    if (currentGoldBalance < 10) {
+    if (currentGoldBalance < 1) {
       setErrorMessage('Not enough gold to perform this action.');
       setTimeout(() => setErrorMessage(null), 5000);
       return; // Exit the function if not enough gold
@@ -158,7 +158,7 @@ const ChatWithQuestNft = ({
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ nftAddress, walletAddress, amount: 10 }),
+          body: JSON.stringify({ nftAddress, walletAddress, amount: 1 }),
         });
 
         const deductResult = await deductResponse.json();
@@ -168,9 +168,9 @@ const ChatWithQuestNft = ({
         }
 
         // Update the silver balance state
-        setSilverBalance((prevBalance) => prevBalance - 10);
+        setSilverBalance((prevBalance) => prevBalance - 1);
         // Add the generated image as a message in the chat
-        setCurrentGoldBalance(currentGoldBalance - 10);
+        setCurrentGoldBalance(currentGoldBalance - 1);
 
         setMessages([...messages, { role: 'system', content: `<img src="${imageUrl}" alt="Generated Image" style="width: 512px; height: 512px;" />` }]);
       }
@@ -504,7 +504,7 @@ const ChatWithQuestNft = ({
                 className="flex gap-2 cursor-pointer items-center text-gray-50/85"
               >
                 <img src="/paint_brush.png" alt="Paintbrush" className="h-6 w-6" />
-                <p>Paint (Cost: 10 Gold) </p>
+                <p>Paint (Cost: Gold) </p>
                 {/* Display the current gold balance here */}
                 <span className="ml-2 text-sm">Current Gold: {currentGoldBalance.toFixed(2)}</span>
 
