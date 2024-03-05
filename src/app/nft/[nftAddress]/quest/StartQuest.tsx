@@ -16,7 +16,7 @@ const StartQuest = ({
   description: string;
   properties: { [key: string]: unknown; trait_type?: string; value?: string }[];
   nftAddress: string;
-  walletAddress?: string;
+  walletAddress: string;
 }) => {
   const [showChat, setShowChat] = useState(false);
 

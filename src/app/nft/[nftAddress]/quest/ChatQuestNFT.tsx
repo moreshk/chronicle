@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { getQuestResponse } from "@/serverAction/openAI";
 import InputSpotlightBorder from "@/components/InputSpotlightBorder";
 import { createImageFromPrompt } from "@/serverAction/openAI";
+import {recordQuestHistory} from "@/serverAction/getCreditsForNFT";
 // import { getSilverBalance } from '../../../../data/db'; // Adjust the import path as needed
 
 const ChatWithQuestNft = ({
@@ -18,7 +19,7 @@ const ChatWithQuestNft = ({
   description: string;
   properties: { [key: string]: unknown; trait_type?: string; value?: string }[];
   nftAddress: string;
-  walletAddress?: string;
+  walletAddress: string;
 }) => {
   const [userInput, setUserInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
@@ -36,13 +37,13 @@ const ChatWithQuestNft = ({
   //   return `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
   // };
 
-  const createTwitterShareUrl = (imageUrl: string, lastMessage: string) => {
-    // Encode only the message and hashtags, not the HTML image tag
-    const text = encodeURIComponent(`${lastMessage} #chronicle`);
-    // The URL should be to a page that contains the image and Twitter card meta tags
-    const url = encodeURIComponent(imageUrl); // This should be a link to a page, not a direct image link
-    return `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
-  };
+  // const createTwitterShareUrl = (imageUrl: string, lastMessage: string) => {
+  //   // Encode only the message and hashtags, not the HTML image tag
+  //   const text = encodeURIComponent(`${lastMessage} #chronicle`);
+  //   // The URL should be to a page that contains the image and Twitter card meta tags
+  //   const url = encodeURIComponent(imageUrl); // This should be a link to a page, not a direct image link
+  //   return `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
+  // };
   
   // New function to fetch the silver balance from the API
   const fetchSilverBalance = async () => {
@@ -158,7 +159,7 @@ const ChatWithQuestNft = ({
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ nftAddress, walletAddress, amount: 1 }),
+          body: JSON.stringify({ nftAddress, walletAddress, amount: 0.5 }),
         });
 
         const deductResult = await deductResponse.json();
@@ -168,9 +169,9 @@ const ChatWithQuestNft = ({
         }
 
         // Update the silver balance state
-        setSilverBalance((prevBalance) => prevBalance - 1);
+        setSilverBalance((prevBalance) => prevBalance - 0.5);
         // Add the generated image as a message in the chat
-        setCurrentGoldBalance(currentGoldBalance - 1);
+        setCurrentGoldBalance(currentGoldBalance - 0.5);
 
         setMessages([...messages, { role: 'system', content: `<img src="${imageUrl}" alt="Generated Image" style="width: 512px; height: 512px;" />` }]);
       }
@@ -272,6 +273,12 @@ const ChatWithQuestNft = ({
       ];
 
       const content = await getQuestResponse(promptData);
+
+      const assistantMessage: Message = {
+        role: "assistant",
+        content: content || "No response",
+      };
+
       setMessages([
         ...messageHistory,
         { role: "user", content: userInput },
@@ -281,6 +288,12 @@ const ChatWithQuestNft = ({
         },
       ]);
       setLoading(false);
+      await recordQuestHistory(
+        userMessage.content,
+        assistantMessage.content,
+        nftAddress,
+        walletAddress
+      );
     } catch (e) {
       setLoading(false);
     }
@@ -309,6 +322,22 @@ const ChatWithQuestNft = ({
       ];
 
       const content = await getQuestResponse(promptData);
+
+      const assistantMessage: Message = {
+        role: "assistant",
+        content: content || "No response",
+      };
+
+          // Record the first chatbot message before updating the state
+    if (messages.length === 0) { // Check if this is the first message
+      await recordQuestHistory(
+        value, // The message sent to the chatbot, in this case, "Start Quest"
+        assistantMessage.content, // The chatbot's response
+        nftAddress,
+        walletAddress
+      );
+    }
+
       setMessages([
         ...messageHistory,
         {
@@ -504,7 +533,7 @@ const ChatWithQuestNft = ({
                 className="flex gap-2 cursor-pointer items-center text-gray-50/85"
               >
                 <img src="/paint_brush.png" alt="Paintbrush" className="h-6 w-6" />
-                <p>Paint (Cost: 1 Gold) </p>
+                <p>Paint (Cost: 0.5 Gold) </p>
                 {/* Display the current gold balance here */}
                 <span className="ml-2 text-sm">Current Gold: {currentGoldBalance.toFixed(2)}</span>
 

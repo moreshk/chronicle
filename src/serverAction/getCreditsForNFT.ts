@@ -71,6 +71,33 @@ export const recordChatHistory = async (
     }
 };
 
+export const recordQuestHistory = async (
+    message_sent: string,
+    response_received: string,
+    nftAddress: string,
+    walletAddress: string
+) => {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/add-quest-history`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                nft_id: nftAddress, // Use the NFT address as the ID
+                wallet_address: walletAddress, // Use the actual wallet address passed as a prop
+                message_sent,
+                response_received,
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to record chat history");
+        }
+    } catch (error) {
+        console.error("Error recording chat history", error);
+    }
+};
 
 export const getMintcNftAPI = async (walletAddress: string) => {
     try {

@@ -39,6 +39,31 @@ async function insertChatHistory(
   }
 }
 
+
+//Insert into the Quest History Table
+async function insertQuestHistory(
+  nft_id,
+  wallet_address,
+  message_sent,
+  response_received
+) {
+  const insertText = `
+    INSERT INTO quest_history (nft_id, wallet_address, message_sent, response_received)
+    VALUES ($1, $2, $3, $4)
+  `;
+  try {
+    await pool.query(insertText, [
+      nft_id,
+      wallet_address,
+      message_sent,
+      response_received,
+    ]);
+  } catch (err) {
+    console.error("Error inserting quest history record", err.stack);
+  }
+}
+
+
 const defaultCredits = process.env.DEFAULT_CREDITS || 20; // Fallback to 10 if the environment variable is not set
 const resetCreditsMinutes =
   parseInt(process.env.NEXT_PUBLIC_RESET_CREDITS_MINUTES, 10) || 15; // Fallback to 5 if the environment variable is not set
@@ -220,7 +245,7 @@ async function deductSilver(nftAddress, walletAddress, amount) {
     // If no record exists, insert a new one with negative silver amount
     const insertText = `
       INSERT INTO silver_claims (nft_address, wallet_address, silver, last_claimed)
-      VALUES ($1, $2, $3 * -1, NOW())
+      VALUES ($1, $2, -$3::numeric, NOW())
       RETURNING silver;
     `;
     updateResult = await pool.query(insertText, [nftAddress, walletAddress, amount]);
@@ -234,6 +259,7 @@ async function deductSilver(nftAddress, walletAddress, amount) {
 
 module.exports = {
   insertChatHistory,
+  insertQuestHistory,
   ensureCreditsForNFT,
   hasEnoughCredits,
   deductCredits,
