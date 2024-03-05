@@ -56,7 +56,7 @@ const Page = ({
             title={nftDetails.json.name}
             properties={nftDetails.json.attributes}
             nftAddress={nftAddress}
-            walletAddress={publicKey?.toBase58()} // Convert publicKey to string
+            walletAddress={publicKey?.toBase58() ?? ''} // Convert publicKey to string
           />
         );
       }
