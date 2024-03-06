@@ -257,6 +257,57 @@ async function deductSilver(nftAddress, walletAddress, amount) {
   return updateResult.rows.length > 0; // Returns true if the update or insert was successful, false otherwise
 }
 
+
+async function upsertHeroJourney(nft_id, story) {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    const selectQuery = 'SELECT id FROM hero_journey WHERE nft_id = $1';
+    const selectResult = await client.query(selectQuery, [nft_id]);
+
+    if (selectResult.rows.length === 0) {
+      // No existing record, insert a new one
+      const insertQuery = `
+        INSERT INTO hero_journey (nft_id, story_so_far)
+        VALUES ($1, $2)
+      `;
+      await client.query(insertQuery, [nft_id, story]);
+    } else {
+      // Existing record found, update it
+      const updateQuery = `
+        UPDATE hero_journey
+        SET story_so_far = $2, timestamp = CURRENT_TIMESTAMP
+        WHERE nft_id = $1
+      `;
+      await client.query(updateQuery, [nft_id, story]);
+    }
+
+    await client.query('COMMIT');
+  } catch (err) {
+    await client.query('ROLLBACK');
+    console.error('Error in upsertHeroJourney', err.stack);
+    throw err; // Rethrow the error for further handling if necessary
+  } finally {
+    client.release();
+  }
+}
+
+async function getHeroJourneyByNFTId(nft_id) {
+  const selectQuery = 'SELECT story_so_far FROM hero_journey WHERE nft_id = $1';
+  try {
+    const { rows } = await pool.query(selectQuery, [nft_id]);
+    if (rows.length > 0) {
+      return rows[0].story_so_far; // Return the story if found
+    } else {
+      return null; // Return null if no story is found for the given nft_id
+    }
+  } catch (err) {
+    console.error('Error fetching hero journey', err.stack);
+    throw err; // Rethrow the error for further handling if necessary
+  }
+}
+
 module.exports = {
   insertChatHistory,
   insertQuestHistory,
@@ -268,4 +319,6 @@ module.exports = {
   claimSilver,
   getSilverBalance,
   deductSilver,
+  upsertHeroJourney,
+  getHeroJourneyByNFTId,
 };

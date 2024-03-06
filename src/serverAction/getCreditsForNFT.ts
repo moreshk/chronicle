@@ -137,3 +137,49 @@ export const deductGold = async (nftAddress: string, walletAddress: string, amou
         return false
     }
 }
+
+export const upsertHeroJourney = async (nftId: string, story: string): Promise<boolean> => {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/upsert-hero-journey`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                nft_id: nftId,
+                story,
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to upsert hero journey: ${response.statusText}`);
+        }
+
+        // You can return more data from the response if needed
+        return true;
+    } catch (error) {
+        console.error('Error in upsertHeroJourney', error);
+        return false;
+    }
+};
+
+
+export const getHeroJourneyByNFTId = async (nftId: string): Promise<string | null> => {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/get-hero-journey?nft_id=${encodeURIComponent(nftId)}`);
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                console.log('No hero journey found for the given NFT ID');
+                return null;
+            }
+            throw new Error(`Failed to retrieve hero journey: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return data.story;
+    } catch (error) {
+        console.error('Error in getHeroJourneyByNFTId', error);
+        throw error; // Rethrow the error for further handling if necessary
+    }
+};
