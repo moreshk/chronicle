@@ -186,11 +186,11 @@ const ChatWithQuestNft = ({
     autoFunctionCall("continue ...");
   };
 
-  const roll = () => {
-    // Generate a random number between 1 and 20
-    const randomNumber = Math.floor(Math.random() * 20) + 1;
-    console.log("Rolled number: ", randomNumber);
-    autoFunctionCall(`I rolled ${randomNumber}`);
+  const roll = (sides: number) => {
+    // Generate a random number between 1 and the number of sides
+    const randomNumber = Math.floor(Math.random() * sides) + 1;
+    console.log(`Rolled number on a D${sides}: `, randomNumber);
+    autoFunctionCall(`I rolled ${randomNumber} on a D${sides}`);
   };
 
   useEffect(() => {
@@ -226,8 +226,8 @@ const ChatWithQuestNft = ({
               Each message should only be 2 to 3 sentences long. If the scene setting is not complete, the user will typically respond with the response: continue ... and you can then continue with the scene setting.
               When a scene is setup you will ask the user what they will do. You do not need to provide specific choices, the user can come up with their own.
 
-              If the user performs an action that would typically require skill (such as combat or evasion or magic or something conceptually similar) then ask the user to roll a dice (one of the various Dungeons and Dragons dices based on the scenario.).
-              The user will use a rng which will respond by saying: I rolled 5 or I rolled 10 or I rolled 7 etc randomly. Then continue the story based on the roll of the dice.
+              If the user performs an action that would typically require skill (such as combat or evasion or magic or something similar) then ask the user to roll one of the various Dungeons and Dragons dices, D4, D6, D8, D12, D20 etc based on the scenario.
+              The user will use a rng which will respond by saying: I rolled 5 on a D6 or I rolled 10 on a D20 etc randomly. Check if the user used the correct dice and then continue the story based on the roll of the dice.
 
               When something requires a roll, make sure to let the user respond with the rolled number. Only then you will continue with the story based on the roll.
 
@@ -352,14 +352,6 @@ const ChatWithQuestNft = ({
         nftAddress,
         walletAddress
       );
-
-      // setMessages([
-      //   ...messageHistory,
-      //   {
-      //     role: "assistant",
-      //     content: content || "No response",
-      //   },
-      // ]);
 
       // Update the messages state with the new user message and the assistant's response
       setMessages([
@@ -533,20 +525,48 @@ const ChatWithQuestNft = ({
               submitMessage();
             }}
           >
-            <div className="flex gap-4 mb-3 ml-1">
+                        <div className="flex flex-wrap gap-4 mb-3 ml-1">
               <div
-                className="cursor-pointer flex gap-2 items-center  text-gray-50/85"
+                className="cursor-pointer flex gap-2 items-center text-gray-50/85"
                 onClick={continueInput}
               >
                 <p>Continue</p>
                 <p className="">&#8617;</p>
               </div>
               <div
-                onClick={roll}
+                onClick={() => roll(20)}
                 className="flex gap-2 cursor-pointer items-center text-gray-50/85"
               >
-                <p>Roll</p>
-                <div className="animate-spin">&#11091;</div>
+                <p>Roll D20</p>
+                <img src="/d20.png" alt="d20" className="h-6 w-6" />
+              </div>
+              <div
+                onClick={() => roll(4)}
+                className="flex gap-2 cursor-pointer items-center text-gray-50/85"
+              >
+                <p>D4</p>
+                <img src="/d4.png" alt="d4" className="h-6 w-6" />
+              </div>
+              <div
+                onClick={() => roll(6)}
+                className="flex gap-2 cursor-pointer items-center text-gray-50/85"
+              >
+                <p>D6</p>
+                <img src="/d6.png" alt="d6" className="h-6 w-6" />
+              </div>
+              <div
+                onClick={() => roll(8)}
+                className="flex gap-2 cursor-pointer items-center text-gray-50/85"
+              >
+                <p>D8</p>
+                <img src="/d8.png" alt="d8" className="h-6 w-6" />
+              </div>
+              <div
+                onClick={() => roll(12)}
+                className="flex gap-2 cursor-pointer items-center text-gray-50/85"
+              >
+                <p>D12</p>
+                <img src="/d12.png" alt="d12" className="h-6 w-6" />
               </div>
 
               <div
@@ -554,10 +574,8 @@ const ChatWithQuestNft = ({
                 className="flex gap-2 cursor-pointer items-center text-gray-50/85"
               >
                 <img src="/paint_brush.png" alt="Paintbrush" className="h-6 w-6" />
-                <p>Paint (Cost: 0.5 Gold) </p>
-                {/* Display the current gold balance here */}
+                <p>Paint (Cost: 0.5 Gold)</p>
                 <span className="ml-2 text-sm">Current Gold: {currentGoldBalance.toFixed(2)}</span>
-
               </div>
             </div>
             <div className="flex gap-4">
