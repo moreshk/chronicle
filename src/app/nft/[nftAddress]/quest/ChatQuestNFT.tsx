@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { getQuestResponse } from "@/serverAction/openAI";
 import InputSpotlightBorder from "@/components/InputSpotlightBorder";
 import { createImageFromPrompt } from "@/serverAction/openAI";
-import {recordQuestHistory} from "@/serverAction/getCreditsForNFT";
+import { recordQuestHistory } from "@/serverAction/getCreditsForNFT";
 // import { getSilverBalance } from '../../../../data/db'; // Adjust the import path as needed
 
 const ChatWithQuestNft = ({
@@ -44,7 +44,7 @@ const ChatWithQuestNft = ({
   //   const url = encodeURIComponent(imageUrl); // This should be a link to a page, not a direct image link
   //   return `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
   // };
-  
+
   // New function to fetch the silver balance from the API
   const fetchSilverBalance = async () => {
     if (!nftAddress || !walletAddress) return;
@@ -187,7 +187,10 @@ const ChatWithQuestNft = ({
   };
 
   const roll = () => {
-    autoFunctionCall("Roll");
+    // Generate a random number between 1 and 20
+    const randomNumber = Math.floor(Math.random() * 20) + 1;
+    console.log("Rolled number: ", randomNumber);
+    autoFunctionCall(`I rolled ${randomNumber}`);
   };
 
   useEffect(() => {
@@ -223,13 +226,10 @@ const ChatWithQuestNft = ({
               Each message should only be 2 to 3 sentences long. If the scene setting is not complete, the user will typically respond with the response: continue ... and you can then continue with the scene setting.
               When a scene is setup you will ask the user what they will do. You do not need to provide specific choices, the user can come up with their own.
 
-              If the user performs an action that would typically require skill (such as combat or evasion or magic) then ask the user to roll a dice (one of the various Dungeons and Dragons dices based on the scenario.).
-              The user will by saying: roll, then you will pick a random number based on the number of sides the dice has and determine if the users action succeeded or not and continue the story accordingly.
-              Ignore messages where the user says I rolled a specific number, when the user is rolling you will come up with the random number yourself. Make sure to mention the number you came up with in the next message.
+              If the user performs an action that would typically require skill (such as combat or evasion or magic or something conceptually similar) then ask the user to roll a dice (one of the various Dungeons and Dragons dices based on the scenario.).
+              The user will use a rng which will respond by saying: I rolled 5 or I rolled 10 or I rolled 7 etc randomly. Then continue the story based on the roll of the dice.
 
-              For eg: "You rolled a 7" or "You rolled a 11" etc. And then continue the story based on the roll of the dice.
-
-              When something requires a roll, make sure to let the user say the message roll. Only then you will mention what was rolled and continue with the story based on the roll.
+              When something requires a roll, make sure to let the user respond with the rolled number. Only then you will continue with the story based on the roll.
 
               If the user responds with a message that does not make sense in the context of the scenario being described, then explain them why they cannot do that (not having the required tools, or illogical actions etc).
 
@@ -253,6 +253,16 @@ const ChatWithQuestNft = ({
 
   const submitMessage = async () => {
     if (!userInput.length) return;
+
+    // Check if the word 'roll' or any word starting with 'roll' is present in the user input
+    if (/\broll\w*/i.test(userInput)) {
+      // Display an error message if 'roll' or variations are found
+      setErrorMessage('Please use the roll button to roll the dice.');
+      setTimeout(() => setErrorMessage(null), 5000);
+      setUserInput(""); // Optionally clear the input
+      return; // Exit the function
+    }
+
     setLoading(true);
     const userMessage: Message = { content: userInput, role: "user" };
     setUserInput("");
@@ -264,7 +274,7 @@ const ChatWithQuestNft = ({
       const messageHistory =
         messages.length >= 100 ? messages.slice(-100) : messages;
 
-      console.log(messages.length);
+      console.log("Message count", messages.length);
       console.log(personalityPrompt);
       const promptData = [
         personalityPrompt,
@@ -315,6 +325,13 @@ const ChatWithQuestNft = ({
 
       const messageHistory =
         messages.length >= 100 ? messages.slice(-100) : messages;
+
+
+      // Exclude "Start Quest" from being added to the UI
+      if (value !== "Start Quest") {
+        messageHistory.push({ role: "user", content: value });
+      }
+
       const promptData = [
         personalityPrompt,
         ...messageHistory,
@@ -328,22 +345,26 @@ const ChatWithQuestNft = ({
         content: content || "No response",
       };
 
-          // Record the first chatbot message before updating the state
-    if (messages.length === 0) { // Check if this is the first message
+      // Record every chatbot message, not just the first one
       await recordQuestHistory(
-        value, // The message sent to the chatbot, in this case, "Start Quest"
+        value, // The message sent to the chatbot, in this case, "Roll" or "Continue ..."
         assistantMessage.content, // The chatbot's response
         nftAddress,
         walletAddress
       );
-    }
 
+      // setMessages([
+      //   ...messageHistory,
+      //   {
+      //     role: "assistant",
+      //     content: content || "No response",
+      //   },
+      // ]);
+
+      // Update the messages state with the new user message and the assistant's response
       setMessages([
         ...messageHistory,
-        {
-          role: "assistant",
-          content: content || "No response",
-        },
+        assistantMessage,
       ]);
 
       setUserInput("");
@@ -389,30 +410,30 @@ const ChatWithQuestNft = ({
                 </div>
               )}
 
-{message.role === 'system' && message.content.startsWith('<img') ? (
-  <>
-    {/* If the system message content is an image tag, render it as HTML */}
-    <div className="flex flex-col items-center"> {/* Use flex-col to stack items vertically */}
-      <div dangerouslySetInnerHTML={{ __html: message.content }} className="w-128 h-128" /> {/* Adjust width and height as needed */}
-      {/* Add the Share on Twitter button below the image */}
-      {generatedImageUrl && (
-        // <button
-        //   onClick={() => window.open(createTwitterShareUrl(generatedImageUrl, messages[messages.length - 1]?.content || ''), '_blank')}
-        //   className="mt-2 inline-flex items-center justify-center rounded-lg bg-blue-500 px-3 py-1 text-white hover:bg-blue-600 text-xs"
-        // >
-        //   <img src="/twitter_icon.png" alt="Twitter" className="mr-1 h-4 w-4" />
-        //   Share on Twitter
-        // </button>
-        null
-      )}
-    </div>
-  </>
-) : (
-  // Otherwise, render the message content as text
-  <p className={`text-lg tracking-wider leading-7 text-gray-50/80 ${message.role === "user" ? "text-right" : ""}`}>
-    {message.content}
-  </p>
-)}
+              {message.role === 'system' && message.content.startsWith('<img') ? (
+                <>
+                  {/* If the system message content is an image tag, render it as HTML */}
+                  <div className="flex flex-col items-center"> {/* Use flex-col to stack items vertically */}
+                    <div dangerouslySetInnerHTML={{ __html: message.content }} className="w-128 h-128" /> {/* Adjust width and height as needed */}
+                    {/* Add the Share on Twitter button below the image */}
+                    {generatedImageUrl && (
+                      // <button
+                      //   onClick={() => window.open(createTwitterShareUrl(generatedImageUrl, messages[messages.length - 1]?.content || ''), '_blank')}
+                      //   className="mt-2 inline-flex items-center justify-center rounded-lg bg-blue-500 px-3 py-1 text-white hover:bg-blue-600 text-xs"
+                      // >
+                      //   <img src="/twitter_icon.png" alt="Twitter" className="mr-1 h-4 w-4" />
+                      //   Share on Twitter
+                      // </button>
+                      null
+                    )}
+                  </div>
+                </>
+              ) : (
+                // Otherwise, render the message content as text
+                <p className={`text-lg tracking-wider leading-7 text-gray-50/80 ${message.role === "user" ? "text-right" : ""}`}>
+                  {message.content}
+                </p>
+              )}
             </div>
           ))}
 
