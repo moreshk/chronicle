@@ -5,6 +5,7 @@ import InputSpotlightBorder from "@/components/InputSpotlightBorder";
 import { createImageFromPrompt } from "@/serverAction/openAI";
 import { recordQuestHistory } from "@/serverAction/getCreditsForNFT";
 import { getHeroJourneyByNFTId } from '@/serverAction/getCreditsForNFT';
+import { upsertHeroJourney } from '@/serverAction/getCreditsForNFT';
 // import { getSilverBalance } from '../../../../data/db'; // Adjust the import path as needed
 
 const ChatWithQuestNft = ({
@@ -32,21 +33,7 @@ const ChatWithQuestNft = ({
 
   const [currentGoldBalance, setCurrentGoldBalance] = useState<number>(0);
 
-  useEffect(() => {
-    const fetchHeroJourney = async () => {
-      const story = await getHeroJourneyByNFTId(nftAddress);
-      if (story) {
-        console.log(story);
-      } else {
-        console.log("No record found");
-      }
-    };
-  
-    if (messages.length === 0) {
-      fetchHeroJourney();
-    }
-  }, [nftAddress, messages.length]);
-  
+
   // New function to fetch the silver balance from the API
   const fetchSilverBalance = async () => {
     if (!nftAddress || !walletAddress) return;
@@ -195,6 +182,29 @@ const ChatWithQuestNft = ({
     autoFunctionCall(`I rolled ${randomNumber} on a D${sides}`);
   };
 
+  const [storySoFar, setStorySoFar] = useState<string | null>(null);
+
+  // Fetch the story so far when the component mounts or when nftAddress changes
+  useEffect(() => {
+    const fetchStorySoFar = async () => {
+      let story = await getHeroJourneyByNFTId(nftAddress);
+      if (!story) {
+        // No existing story, create a new one
+        const prompt = `Create a few sentences describing starting setting for this characters story based on hero's journey story framework. Character title: ${title}, description: ${description}, traits: ${properties.map((attr) => `${attr.trait_type}: ${attr.value}`).join(", ")}. Focus only on creating the setting for the storyline from which the adventure can start.`;
+        story = await getQuestResponse([{ role: "system", content: prompt }]);
+        if (story) {
+          // Insert the new story into the hero_journey table
+          await upsertHeroJourney(nftAddress, story);
+        }
+      }
+      setStorySoFar(story);
+    };
+
+    if (nftAddress) {
+      fetchStorySoFar();
+    }
+  }, [nftAddress, title, description, properties]);
+
   useEffect(() => {
     autoFunctionCall("Start Quest");
   }, []);
@@ -216,6 +226,7 @@ const ChatWithQuestNft = ({
               CHARACTER: ${title}
               CHARACTER DESCRIPTION: ${description}
               CHARACTER TRAITS: ${traits}.
+              STORY SO FAR: ${storySoFar || 'The adventure begins anew.'}
 
               MESSAGE HISTORY LENGTH: ${messages.length}
 
@@ -411,13 +422,6 @@ const ChatWithQuestNft = ({
                     <div dangerouslySetInnerHTML={{ __html: message.content }} className="w-128 h-128" /> {/* Adjust width and height as needed */}
                     {/* Add the Share on Twitter button below the image */}
                     {generatedImageUrl && (
-                      // <button
-                      //   onClick={() => window.open(createTwitterShareUrl(generatedImageUrl, messages[messages.length - 1]?.content || ''), '_blank')}
-                      //   className="mt-2 inline-flex items-center justify-center rounded-lg bg-blue-500 px-3 py-1 text-white hover:bg-blue-600 text-xs"
-                      // >
-                      //   <img src="/twitter_icon.png" alt="Twitter" className="mr-1 h-4 w-4" />
-                      //   Share on Twitter
-                      // </button>
                       null
                     )}
                   </div>
@@ -576,7 +580,7 @@ const ChatWithQuestNft = ({
                 className="flex gap-2 cursor-pointer items-center text-gray-50/85"
               >
                 <img src="/paint_brush.png" alt="Paintbrush" className="h-6 w-6" />
-                <p>Paint (Cost: 0.5 Gold)</p>
+                <p>Paint (0.5 Gold)</p>
                 <span className="ml-2 text-sm">Current Gold: {currentGoldBalance.toFixed(2)}</span>
               </div>
             </div>
