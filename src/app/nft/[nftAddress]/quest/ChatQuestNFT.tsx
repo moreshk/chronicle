@@ -4,6 +4,7 @@ import { getQuestResponse } from "@/serverAction/openAI";
 import InputSpotlightBorder from "@/components/InputSpotlightBorder";
 import { createImageFromPrompt } from "@/serverAction/openAI";
 import { recordQuestHistory } from "@/serverAction/getCreditsForNFT";
+import { getHeroJourneyByNFTId } from '@/serverAction/getCreditsForNFT';
 // import { getSilverBalance } from '../../../../data/db'; // Adjust the import path as needed
 
 const ChatWithQuestNft = ({
@@ -31,20 +32,21 @@ const ChatWithQuestNft = ({
 
   const [currentGoldBalance, setCurrentGoldBalance] = useState<number>(0);
 
-  // const createTwitterShareUrl = (imageUrl: string, lastMessage: string) => {
-  //   const text = encodeURIComponent(`${lastMessage} #chronicle`);
-  //   const url = encodeURIComponent(imageUrl);
-  //   return `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
-  // };
-
-  // const createTwitterShareUrl = (imageUrl: string, lastMessage: string) => {
-  //   // Encode only the message and hashtags, not the HTML image tag
-  //   const text = encodeURIComponent(`${lastMessage} #chronicle`);
-  //   // The URL should be to a page that contains the image and Twitter card meta tags
-  //   const url = encodeURIComponent(imageUrl); // This should be a link to a page, not a direct image link
-  //   return `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
-  // };
-
+  useEffect(() => {
+    const fetchHeroJourney = async () => {
+      const story = await getHeroJourneyByNFTId(nftAddress);
+      if (story) {
+        console.log(story);
+      } else {
+        console.log("No record found");
+      }
+    };
+  
+    if (messages.length === 0) {
+      fetchHeroJourney();
+    }
+  }, [nftAddress, messages.length]);
+  
   // New function to fetch the silver balance from the API
   const fetchSilverBalance = async () => {
     if (!nftAddress || !walletAddress) return;
