@@ -107,18 +107,18 @@ const ChatWithNft = ({
         return message;
       });
       const content = await getResponse(promptData);
+      if (content === null) {
+        throw new Error("Failed to get response from OpenAI");
+      }
 
       const assistantMessage: Message = {
         role: "assistant",
-        content: content || "No response",
+        content: content,
       };
       setMessages([
         ...messageHistory,
         { role: "user", content: userInput },
-        {
-          role: "assistant",
-          content: content || "No response",
-        },
+        assistantMessage,
       ]);
 
       setLoading(false);
@@ -137,7 +137,13 @@ const ChatWithNft = ({
         ]);
         return;
       }
-    } catch (e) {
+    } catch (error) {
+      console.error("Error in submitMessage:", error);
+      setMessages((oldMessages) => [
+        ...oldMessages,
+        { role: "system", content: "An error occurred while processing your message. Please try again." },
+      ]);
+    } finally {
       setLoading(false);
     }
   };

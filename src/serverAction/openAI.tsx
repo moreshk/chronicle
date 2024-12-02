@@ -9,13 +9,19 @@ export const getResponse = async (
   messages: ChatCompletionMessageParam[]
 ): Promise<string | null> => {
   try {
+    console.log("Attempting to create chat completion");
     const completion = await openai.chat.completions.create({
       messages,
       model: "gpt-4o-mini",
     });
+    console.log("Chat completion successful");
     return completion.choices[0].message.content;
   } catch (e) {
-    return null;
+    console.error("Error in getResponse:", e);
+    if (e instanceof OpenAI.APIError) {
+      console.error("OpenAI API Error:", e.status, e.message, e.code);
+    }
+    throw e; // Re-throw the error to be handled by the caller
   }
 };
 export const getQuestResponse = async (
