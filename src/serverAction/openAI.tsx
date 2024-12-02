@@ -11,7 +11,7 @@ export const getResponse = async (
   try {
     const completion = await openai.chat.completions.create({
       messages,
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o-mini",
     });
     return completion.choices[0].message.content;
   } catch (e) {
@@ -24,7 +24,7 @@ export const getQuestResponse = async (
   try {
     const completion = await openai.chat.completions.create({
       messages,
-      model: "gpt-3.5-turbo-1106",
+      model: "gpt-4o-mini",
     });
     return completion.choices[0].message.content;
   } catch (e) {
