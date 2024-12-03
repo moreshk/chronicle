@@ -7,6 +7,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useCreditContext } from "@/wrapper/credits.wrapper";
 
 const Page = ({
     params: { nftAddress },
@@ -17,6 +18,7 @@ const Page = ({
     const { publicKey, connected } = useWallet();
     const [silverBalance, setSilverBalance] = useState(0);
     const [canClaimSilver, setCanClaimSilver] = useState(false);
+    const { creditsDetails } = useCreditContext();
 
     // Define species and background at the component level
     const [species, setSpecies] = useState('');
@@ -187,6 +189,10 @@ const Page = ({
                             alt={nftDetails.json?.name}
                             className="rounded-xl w-full h-auto max-w-md sm:max-w-sm"
                         />
+                    </div>
+                    <div className="text-center mt-4 mb-2">
+                        <span className="font-semibold">Credits:</span>{' '}
+                        {creditsDetails?.credits !== undefined ? creditsDetails.credits : 'Loading...'}
                     </div>
                     <h1 className="text-4xl font-bold text-center my-4">
                         {nftDetails.json?.name}

@@ -30,10 +30,12 @@ export default function RootLayout({
             <WalletWrapper>
               <NFTCollectionProvider>
                 <CNFTCollectionProvider>
-                  <div className="absolute top-4 right-4 sm:top-10 sm:right-10">
-                    <ConnectWalletButton />
-                  </div>
-                  {children}
+                  <CreditProvider>
+                    <div className="absolute top-4 right-4 sm:top-10 sm:right-10">
+                      <ConnectWalletButton />
+                    </div>
+                    {children}
+                  </CreditProvider>
                 </CNFTCollectionProvider>
               </NFTCollectionProvider>
             </WalletWrapper>
