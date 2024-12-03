@@ -3,11 +3,14 @@
 import { useState, useEffect } from 'react';
 import { ConnectWallet } from "@/components/connectWallet";
 import { useNFT } from "@/context/nftCollection.context";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCreditContext } from "@/wrapper/credits.wrapper";
+import { PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { TOKEN_PROGRAM_ID, createTransferInstruction, getAssociatedTokenAddress, ASSOCIATED_TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import BuyCredits from "@/components/BuyCredits";
 
 const Page = ({
     params: { nftAddress },
@@ -16,6 +19,7 @@ const Page = ({
 }) => {
     const { nfts, error, isNftLoaded } = useNFT();
     const { publicKey, connected } = useWallet();
+    const { connection } = useConnection();
     const [silverBalance, setSilverBalance] = useState(0);
     const [canClaimSilver, setCanClaimSilver] = useState(false);
     const { creditsDetails } = useCreditContext();
@@ -190,9 +194,12 @@ const Page = ({
                             className="rounded-xl w-full h-auto max-w-md sm:max-w-sm"
                         />
                     </div>
-                    <div className="text-center mt-4 mb-2">
-                        <span className="font-semibold">Credits:</span>{' '}
-                        {creditsDetails?.credits !== undefined ? creditsDetails.credits : 'Loading...'}
+                    <div className="flex justify-center items-center gap-4 mt-4 mb-2">
+                        <div>
+                            <span className="font-semibold">Credits:</span>{' '}
+                            {creditsDetails?.credits !== undefined ? creditsDetails.credits : 'Loading...'}
+                        </div>
+                        <BuyCredits />
                     </div>
                     <h1 className="text-4xl font-bold text-center my-4">
                         {nftDetails.json?.name}
