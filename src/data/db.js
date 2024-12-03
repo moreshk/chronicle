@@ -308,6 +308,13 @@ async function getHeroJourneyByNFTId(nft_id) {
   }
 }
 
+async function increaseCredits(nftAddress, amount) {
+  const updateText =
+    "UPDATE nft_credits SET credits = credits + $2 WHERE nft_address = $1";
+  const { rowCount } = await pool.query(updateText, [nftAddress, amount]);
+  return rowCount > 0; // Returns true if the update was successful, false otherwise
+}
+
 module.exports = {
   insertChatHistory,
   insertQuestHistory,
@@ -321,4 +328,5 @@ module.exports = {
   deductSilver,
   upsertHeroJourney,
   getHeroJourneyByNFTId,
+  increaseCredits,
 };

@@ -199,7 +199,7 @@ const Page = ({
                             <span className="font-semibold">Credits:</span>{' '}
                             {creditsDetails?.credits !== undefined ? creditsDetails.credits : 'Loading...'}
                         </div>
-                        <BuyCredits />
+                        <BuyCredits nftAddress={nftAddress} />
                     </div>
                     <h1 className="text-4xl font-bold text-center my-4">
                         {nftDetails.json?.name}

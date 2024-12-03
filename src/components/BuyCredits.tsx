@@ -1,10 +1,12 @@
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey, Transaction } from "@solana/web3.js";
 import { TOKEN_PROGRAM_ID, createTransferInstruction, getAssociatedTokenAddress, ASSOCIATED_TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import { useCreditContext } from "@/wrapper/credits.wrapper";
 
-const BuyCredits = () => {
+const BuyCredits = ({ nftAddress }: { nftAddress: string }) => {
     const { publicKey } = useWallet();
     const { connection } = useConnection();
+    const { updateCredits, creditsDetails } = useCreditContext();
 
     const handleBuyCredits = async () => {
         if (!publicKey || !connection) {
@@ -14,7 +16,7 @@ const BuyCredits = () => {
 
         const receiverAddress = new PublicKey("9BAa8bSQrUAT3nipra5bt3DJbW2Wyqfc2SXw3vGcjpbj");
         const tokenMint = new PublicKey("53ctv3wwFXQbXruKWsbQcCe7sefowyu96pXK6FRLTjfv");
-        const amount = 100; // Amount of SPL tokens to transfer
+        const amount = 1000000; // Amount of SPL tokens to transfer
 
         try {
             const fromTokenAccount = await getAssociatedTokenAddress(
@@ -53,7 +55,22 @@ const BuyCredits = () => {
             await connection.confirmTransaction(signature);
 
             console.log("Transaction successful:", signature);
-            // You may want to update the user's credit balance here
+            
+            const response = await fetch('/api/increase-credits', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ nftAddress: nftAddress, amount: 20 }),
+            });
+
+            if (response.ok) {
+                const newCredits = creditsDetails?.credits ? creditsDetails.credits + 20 : 20;
+                updateCredits(newCredits);
+                alert('Credits purchased successfully!');
+            } else {
+                throw new Error('Failed to increase credits');
+            }
         } catch (error) {
             console.error("Error buying credits:", error);
             if (error instanceof Error) {
