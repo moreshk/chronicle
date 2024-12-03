@@ -4,6 +4,7 @@ import { ConnectWallet } from "@/components/connectWallet";
 import { useNFT } from "@/context/nftCollection.context";
 import { useWallet } from "@solana/wallet-adapter-react";
 import StartQuest from "./StartQuest";
+import { CreditProvider } from "@/wrapper/credits.wrapper";
 
 const Page = ({
   params: { nftAddress },
@@ -13,6 +14,7 @@ const Page = ({
   const { nfts, error, isNftLoaded } = useNFT();
   const { connected } = useWallet();
   const { publicKey } = useWallet(); // publicKey is the wallet address
+
   if (error) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center p-24">
@@ -20,6 +22,7 @@ const Page = ({
       </div>
     );
   }
+
   if (isNftLoaded === "loading" || isNftLoaded === "unloaded") {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center px-4 sm:p-24">
@@ -50,14 +53,16 @@ const Page = ({
         nftDetails.json.attributes
       ) {
         return (
-          <StartQuest
-            image={nftDetails.json.image}
-            description={nftDetails.json.description}
-            title={nftDetails.json.name}
-            properties={nftDetails.json.attributes}
-            nftAddress={nftAddress}
-            walletAddress={publicKey?.toBase58() ?? ''} // Convert publicKey to string
-          />
+          <div className="pt-20">
+            <StartQuest
+              image={nftDetails.json.image}
+              description={nftDetails.json.description}
+              title={nftDetails.json.name}
+              properties={nftDetails.json.attributes}
+              nftAddress={nftAddress}
+              walletAddress={publicKey?.toBase58() ?? ''}
+            />
+          </div>
         );
       }
     }
@@ -68,6 +73,7 @@ const Page = ({
       </div>
     );
   }
+
   if (!connected) {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center sm:p-24 px-4">
@@ -75,6 +81,7 @@ const Page = ({
       </main>
     );
   }
+
   return null;
 };
 

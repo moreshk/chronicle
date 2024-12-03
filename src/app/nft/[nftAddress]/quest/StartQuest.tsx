@@ -1,7 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ChatWithQuestNft from "./ChatQuestNFT";
-
+import { useCreditContext } from "@/wrapper/credits.wrapper";
 
 const StartQuest = ({
   image,
@@ -19,6 +19,12 @@ const StartQuest = ({
   walletAddress: string;
 }) => {
   const [showChat, setShowChat] = useState(false);
+  const { fetchData, setShowCredits } = useCreditContext();
+
+  useEffect(() => {
+    setShowCredits(true);
+    fetchData();
+  }, []);
 
   return (
     <div>

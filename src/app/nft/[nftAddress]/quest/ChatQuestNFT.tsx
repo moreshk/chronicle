@@ -6,6 +6,7 @@ import { createImageFromPrompt } from "@/serverAction/openAI";
 import { recordQuestHistory } from "@/serverAction/getCreditsForNFT";
 import { getHeroJourneyByNFTId } from '@/serverAction/getCreditsForNFT';
 import { upsertHeroJourney } from '@/serverAction/getCreditsForNFT';
+import { useCreditContext } from "@/wrapper/credits.wrapper";
 // import { getSilverBalance } from '../../../../data/db'; // Adjust the import path as needed
 
 const ChatWithQuestNft = ({
@@ -34,6 +35,12 @@ const ChatWithQuestNft = ({
 
   const [currentGoldBalance, setCurrentGoldBalance] = useState<number>(0);
 
+  const { fetchData, setShowCredits, updateCredits, creditsDetails } = useCreditContext();
+
+  useEffect(() => {
+    setShowCredits(true);
+    fetchData();
+  }, []);
 
   // New function to fetch the silver balance from the API
   const fetchSilverBalance = async () => {
