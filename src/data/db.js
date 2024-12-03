@@ -84,13 +84,13 @@ async function ensureCreditsForNFT(nftAddress) {
   } else {
     const lastUpdated = new Date(rows[0].last_updated);
     const minutesDiff = (currentTime - lastUpdated) / (1000 * 60);
-    if (minutesDiff >= resetCreditsMinutes) {
-      // It's been more than 24 hours since the last update, reset credits to 50
-      const updateText =
-        "UPDATE nft_credits SET credits = $2, last_updated = $3 WHERE nft_address = $1";
-      await pool.query(updateText, [nftAddress, defaultCredits, currentTime]);
-      return true;
-    }
+    // if (minutesDiff >= resetCreditsMinutes) {
+    //   // It's been more than 24 hours since the last update, reset credits to 50
+    //   const updateText =
+    //     "UPDATE nft_credits SET credits = $2, last_updated = $3 WHERE nft_address = $1";
+    //   await pool.query(updateText, [nftAddress, defaultCredits, currentTime]);
+    //   return true;
+    // }
 
     return rows[0].credits > 0;
   }
