@@ -194,12 +194,15 @@ const Page = ({
                             className="rounded-xl w-full h-auto max-w-md sm:max-w-sm"
                         />
                     </div>
-                    <div className="flex justify-center items-center gap-4 mt-4 mb-2">
-                        <div>
-                            <span className="font-semibold">Credits:</span>{' '}
-                            {creditsDetails?.credits !== undefined ? creditsDetails.credits : 'Loading...'}
+                    <div className="flex flex-col items-center justify-center gap-4 mt-4 mb-2">
+                        <div className="flex items-center gap-4">
+                            <div>
+                                <span className="font-semibold">Credits:</span>{' '}
+                                {creditsDetails?.credits !== undefined ? creditsDetails.credits : 'Loading...'}
+                            </div>
+                            <BuyCredits nftAddress={nftAddress} />
                         </div>
-                        <BuyCredits nftAddress={nftAddress} />
+                        <div className="h-6"></div>
                     </div>
                     <h1 className="text-4xl font-bold text-center my-4">
                         {nftDetails.json?.name}

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey, Transaction } from "@solana/web3.js";
 import { TOKEN_PROGRAM_ID, createTransferInstruction, getAssociatedTokenAddress, ASSOCIATED_TOKEN_PROGRAM_ID } from "@solana/spl-token";
@@ -7,6 +8,7 @@ const BuyCredits = ({ nftAddress }: { nftAddress: string }) => {
     const { publicKey } = useWallet();
     const { connection } = useConnection();
     const { updateCredits, creditsDetails } = useCreditContext();
+    const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
     const handleBuyCredits = async () => {
         if (!publicKey || !connection) {
@@ -67,7 +69,8 @@ const BuyCredits = ({ nftAddress }: { nftAddress: string }) => {
             if (response.ok) {
                 const newCredits = creditsDetails?.credits ? creditsDetails.credits + 20 : 20;
                 updateCredits(newCredits);
-                alert('Credits purchased successfully!');
+                setShowSuccessMessage(true);
+                setTimeout(() => setShowSuccessMessage(false), 3000); // Hide message after 3 seconds
             } else {
                 throw new Error('Failed to increase credits');
             }
@@ -82,12 +85,19 @@ const BuyCredits = ({ nftAddress }: { nftAddress: string }) => {
     };
 
     return (
-        <button
-            className="inline-flex h-12 items-center justify-center rounded-lg border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 whitespace-nowrap text-sm px-4 h-10 animate-background-shine"
-            onClick={handleBuyCredits}
-        >
-            Buy Credits
-        </button>
+        <div className="relative">
+            <button
+                onClick={handleBuyCredits}
+                className="inline-flex h-12 animate-background-shine items-center justify-center rounded-lg border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 whitespace-nowrap"
+            >
+                Buy Credits
+            </button>
+            {showSuccessMessage && (
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-4 py-2 bg-green-500 text-white rounded-md text-sm">
+                    Credits purchased successfully!
+                </div>
+            )}
+        </div>
     );
 };
 
