@@ -31,11 +31,8 @@ const ChatWithQuestNft = ({
   // const [loading, setLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const ref = useRef<HTMLDivElement>(null);
-  const [silverBalance, setSilverBalance] = useState<number>(0);
   // Add a new state to hold the generated image URL
   const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(null);
-
-  const [currentGoldBalance, setCurrentGoldBalance] = useState<number>(0);
 
   const { fetchData, setShowCredits, updateCredits, creditsDetails } = useCreditContext();
 
@@ -44,94 +41,16 @@ const ChatWithQuestNft = ({
     fetchData();
   }, []);
 
-  // New function to fetch the silver balance from the API
-  const fetchSilverBalance = async () => {
-    if (!nftAddress || !walletAddress) return;
-
-    try {
-      const response = await fetch('/api/get-silver-balance', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ nftAddress, walletAddress }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      const data = await response.json();
-      setSilverBalance(data.silver);
-    } catch (error) {
-      console.error('Error fetching silver balance:', error);
-      // Handle the error appropriately
-    }
-  };
-
-  // Replace the useEffect hook that calls getSilverBalance with the new fetchSilverBalance
-  useEffect(() => {
-    fetchSilverBalance();
-  }, [nftAddress, walletAddress]);
-
-  // Function to calculate the current gold balance
-  const calculateCurrentGoldBalance = async () => {
-    // Find the Gold attribute from the properties
-    const goldAttribute = properties.find(attr => attr.trait_type === 'Gold');
-    const startingGold = goldAttribute ? parseFloat(goldAttribute.value as string) : 0;
-
-    try {
-      // Fetch the silver balance using the API call
-      const response = await fetch('/api/get-silver-balance', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ nftAddress, walletAddress }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      const data = await response.json();
-      const silver = parseFloat(data.silver);
-
-      // Calculate the current gold balance
-      const currentGold = startingGold + silver;
-      setCurrentGoldBalance(currentGold);
-    } catch (error) {
-      console.error('Error fetching silver balance:', error);
-      // Handle the error appropriately, for example, by setting an error state
-    }
-  };
-
-  // Call the function to calculate the current gold balance when the component mounts
-  useEffect(() => {
-    calculateCurrentGoldBalance();
-    // You should include calculateCurrentGoldBalance in the dependency array
-    // to avoid exhaustive-deps warning, and make sure it's stable (not re-created on each render).
-    // If calculateCurrentGoldBalance is re-created on each render, you should wrap it with useCallback
-    // or move it inside the useEffect if it's only used there.
-  }, [calculateCurrentGoldBalance]);
-
   useEffect(() => {
     console.log(`Wallet Address: ${walletAddress}`);
     console.log(`NFT Address: ${nftAddress}`);
-    console.log(`Current Gold Balance: ${currentGoldBalance}`);
-  }, [messages]); // This effect runs every time a new message is added to the messages array
+  }, [messages]);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-
   const paintbrushAction = async () => {
-    if (currentGoldBalance < 1) {
-      setErrorMessage('Not enough gold to perform this action.');
-      setTimeout(() => setErrorMessage(null), 5000);
-      return; // Exit the function if not enough gold
-    }
-    setErrorMessage(null); // Clear any previous error messages
-    setLoading(true); // Start loading
+    setErrorMessage(null);
+    setLoading(true);
 
     // Remove HTML tags from the messages
     const textOnlyMessages = messages.map((msg) => msg.content.replace(/<[^>]*>/g, '')).join(' ');
@@ -149,35 +68,15 @@ const ChatWithQuestNft = ({
       const imageUrl = await createImageFromPrompt(prompt);
 
       if (imageUrl) {
-        // After the image URL is set, log it to the console
         console.log("Generated Image URL:", imageUrl);
         setGeneratedImageUrl(imageUrl);
-
-        const deductResponse = await fetch('/api/deduct-silver', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ nftAddress, walletAddress, amount: 0.5 }),
-        });
-
-        const deductResult = await deductResponse.json();
-
-        if (!deductResponse.ok) {
-          throw new Error(deductResult.error || 'Failed to deduct silver');
-        }
-
-        // Update the silver balance state
-        setSilverBalance((prevBalance) => prevBalance - 0.5);
-        // Add the generated image as a message in the chat
-        setCurrentGoldBalance(currentGoldBalance - 0.5);
 
         setMessages([...messages, { role: 'system', content: `<img src="${imageUrl}" alt="Generated Image" style="width: 512px; height: 512px;" />` }]);
       }
     } catch (error) {
       console.error('Error generating image:', error);
     } finally {
-      setLoading(false); // Stop loading regardless of success or failure
+      setLoading(false);
     }
   };
 
@@ -637,8 +536,7 @@ const ChatWithQuestNft = ({
                 className="flex gap-2 cursor-pointer items-center text-gray-50/85"
               >
                 <img src="/paint_brush.png" alt="Paintbrush" className="h-6 w-6" />
-                <p>Paint (0.5 Gold)</p>
-                <span className="ml-2 text-sm">Current Gold: {currentGoldBalance.toFixed(2)}</span>
+                <p>Paint</p>
               </div>
             </div>
             <div className="flex gap-4">
