@@ -41,15 +41,49 @@ export const getQuestResponse = async (
 
 export const createImageFromPrompt = async (prompt: string): Promise<string | null> => {
   try {
-    const response = await openai.images.generate({
-      model: "dall-e-3",
-      prompt: prompt,
+    // Generate improved prompt using OpenAI chat completion
+    const improvedPromptCompletion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: "You are a image gen prompt creator, you are good at creating prompts so that sd xl turbo image gen models can create images relevant to the input. I will provide you instructions and you will respond with a suitable prompt that can then be fed to sd xl turbo image gen model. This prompt will be messages from a dungeon master from a DnD game, your task is to take the most interesting parts of the message and construct a prompt that will generate a suitable image for them. Your message is: "
+        },
+        {
+          role: "user",
+          content: prompt
+        }
+      ],
     });
-    // Assuming the response structure is correct and there is a data array with a url property
-    const imageUrl = response.data[0]?.url; // Using optional chaining to handle undefined
-    return imageUrl ?? null; // Using nullish coalescing operator to return null if imageUrl is undefined
+
+    const improvedPrompt = improvedPromptCompletion.choices[0]?.message.content;
+    console.log("Improved prompt:", improvedPrompt);
+
+    // Generate image using Stability AI SDXL Turbo via Deep Infra API
+    const response = await fetch('https://api.deepinfra.com/v1/inference/stabilityai/sdxl-turbo', {
+      method: 'POST',
+      headers: {
+        'Authorization': `bearer ${process.env.DEEP_INFRA_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        prompt: improvedPrompt || prompt,
+        num_images: 1,
+        width: 1024,
+        height: 1024,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Deep Infra API request failed with status ${response.status}`);
+    }
+
+    const data = await response.json();
+    const imageUrl = data.images[0];
+
+    return imageUrl ?? null;
   } catch (e) {
-    console.error(e);
+    console.error("Error in createImageFromPrompt:", e);
     return null;
   }
 };

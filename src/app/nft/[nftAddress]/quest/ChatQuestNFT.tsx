@@ -54,15 +54,20 @@ const ChatWithQuestNft = ({
     setErrorMessage(null);
     setLoading(true);
 
-    // Remove HTML tags from the messages
-    const textOnlyMessages = messages.map((msg) => msg.content.replace(/<[^>]*>/g, '')).join(' ');
+    // Find the last AI message
+    const lastAIMessage = [...messages].reverse().find(msg => msg.role === 'assistant');
 
-    // Split the text into sentences
-    const sentences = textOnlyMessages.match(/[^\.!\?]+[\.!\?]+/g) || [];
+    if (!lastAIMessage) {
+      console.error('No AI message found');
+      setErrorMessage('No AI message found to generate an image from.');
+      setLoading(false);
+      return;
+    }
 
-    // Take the last three sentences for the prompt
-    const lastSentences = sentences.slice(-3).join(' ');
-    const prompt = `Draw me a dnd pixel art style image (without any text in the image) depicting something interesting from the messages here: ${lastSentences}. `;
+    // Remove HTML tags from the last AI message
+    const cleanedMessage = lastAIMessage.content.replace(/<[^>]*>/g, '');
+
+    const prompt = `Draw me a dnd pixel art style image (without any text in the image) depicting something interesting from this message: ${cleanedMessage}`;
 
     console.log(prompt);
 
@@ -77,6 +82,7 @@ const ChatWithQuestNft = ({
       }
     } catch (error) {
       console.error('Error generating image:', error);
+      setErrorMessage('Failed to generate image. Please try again.');
     } finally {
       setLoading(false);
     }
