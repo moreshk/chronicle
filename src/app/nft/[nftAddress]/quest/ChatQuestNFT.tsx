@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { getQuestResponse } from "@/serverAction/openAI";
@@ -39,12 +40,13 @@ const ChatWithQuestNft = ({
   useEffect(() => {
     setShowCredits(true);
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    console.log(`Wallet Address: ${walletAddress}`);
-    console.log(`NFT Address: ${nftAddress}`);
-  }, [messages]);
+  // useEffect(() => {
+  //   console.log(`Wallet Address: ${walletAddress}`);
+  //   console.log(`NFT Address: ${nftAddress}`);
+  // }, [messages]);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -137,6 +139,7 @@ const ChatWithQuestNft = ({
       // Set loading to false only after the Start Quest message has been processed
       // setLoading(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storySoFar]);
 
 

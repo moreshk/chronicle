@@ -46,6 +46,7 @@ const ChatWithNft = ({
   useEffect(() => {
     setShowCredits(true);
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Function to record the chat history in the database
