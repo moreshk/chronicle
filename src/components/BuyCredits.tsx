@@ -56,7 +56,7 @@ const BuyCredits = ({ nftAddress }: { nftAddress: string }) => {
             const signature = await connection.sendRawTransaction(signedTransaction.serialize());
             await connection.confirmTransaction(signature);
 
-            console.log("Transaction successful:", signature);
+            // console.log("Transaction successful:", signature);
             
             const response = await fetch('/api/increase-credits', {
                 method: 'POST',

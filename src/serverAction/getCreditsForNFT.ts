@@ -126,7 +126,7 @@ export const deductGold = async (nftAddress: string, walletAddress: string, amou
             body: JSON.stringify({ nftAddress, walletAddress, amount, }),
         });
         if (response.ok) {
-            console.log(response)
+            // console.log(response)
             const newResponse = await getMintcNftAPI(walletAddress)
             return newResponse
         } else {
@@ -170,7 +170,7 @@ export const getHeroJourneyByNFTId = async (nftId: string): Promise<string | nul
 
         if (!response.ok) {
             if (response.status === 404) {
-                console.log('No hero journey found for the given NFT ID');
+                // console.log('No hero journey found for the given NFT ID');
                 return null;
             }
             throw new Error(`Failed to retrieve hero journey: ${response.statusText}`);

@@ -19,6 +19,7 @@ const ChatWithQuestNft = ({
   properties,
   nftAddress, // Make sure this prop is passed to the component
   walletAddress,
+  showChat,
 }: {
   image: string;
   title: string;
@@ -26,6 +27,7 @@ const ChatWithQuestNft = ({
   properties: { [key: string]: unknown; trait_type?: string; value?: string }[];
   nftAddress: string;
   walletAddress: string;
+  showChat: boolean;
 }) => {
   const [userInput, setUserInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
@@ -36,17 +38,6 @@ const ChatWithQuestNft = ({
   const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(null);
 
   const { fetchData, setShowCredits, updateCredits, creditsDetails } = useCreditContext();
-
-  useEffect(() => {
-    setShowCredits(true);
-    fetchData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // useEffect(() => {
-  //   console.log(`Wallet Address: ${walletAddress}`);
-  //   console.log(`NFT Address: ${nftAddress}`);
-  // }, [messages]);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -86,7 +77,7 @@ const ChatWithQuestNft = ({
 
     const prompt = `Draw me a dnd pixel art style image (without any text in the image) depicting something interesting from this message: ${cleanedMessage}`;
 
-    console.log(prompt);
+    // console.log(prompt);
 
     try {
       // Deduct 20 credits
@@ -103,7 +94,7 @@ const ChatWithQuestNft = ({
       const imageUrl = await createImageFromPrompt(prompt);
 
       if (imageUrl) {
-        console.log("Generated Image URL:", imageUrl);
+        // console.log("Generated Image URL:", imageUrl);
         setGeneratedImageUrl(imageUrl);
 
         setMessages(prevMessages => [...prevMessages, { role: 'system', content: `<img src="${imageUrl}" alt="Generated Image" style="width: 512px; height: 512px;" />` }]);
@@ -163,19 +154,12 @@ const ChatWithQuestNft = ({
     }
   }, [nftAddress, title, description, properties]);
 
-  // useEffect(() => {
-  //   autoFunctionCall("Start Quest");
-  // }, []);
-
   useEffect(() => {
-    if (storySoFar) {
+    if (storySoFar && showChat) {
       autoFunctionCall("Start Quest");
-      // Set loading to false only after the Start Quest message has been processed
-      // setLoading(false);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [storySoFar]);
-
+  }, [storySoFar, showChat]);
 
   useEffect(() => {
     if (ref?.current) {

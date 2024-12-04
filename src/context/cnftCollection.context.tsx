@@ -34,7 +34,7 @@ export const CNFTCollectionProvider = ({
             cnft.grouping[0].group_value ===
               process.env.NEXT_PUBLIC_COLLECTION_ADDRESS
         );
-        console.log(colletion);
+        // console.log(colletion);
         if (colletion) setcNfts(colletion);
       } catch (e) {
         setError("unable to load nfts");

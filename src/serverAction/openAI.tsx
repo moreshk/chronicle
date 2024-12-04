@@ -9,12 +9,12 @@ export const getResponse = async (
   messages: ChatCompletionMessageParam[]
 ): Promise<string | null> => {
   try {
-    console.log("Attempting to create chat completion");
+    // console.log("Attempting to create chat completion");
     const completion = await openai.chat.completions.create({
       messages,
       model: "gpt-4o-mini",
     });
-    console.log("Chat completion successful");
+    // console.log("Chat completion successful");
     return completion.choices[0].message.content;
   } catch (e) {
     console.error("Error in getResponse:", e);
@@ -57,7 +57,7 @@ export const createImageFromPrompt = async (prompt: string): Promise<string | nu
     });
 
     const improvedPrompt = improvedPromptCompletion.choices[0]?.message.content;
-    console.log("Improved prompt:", improvedPrompt);
+    // console.log("Improved prompt:", improvedPrompt);
 
     // Generate image using Stability AI SDXL Turbo via Deep Infra API
     const response = await fetch('https://api.deepinfra.com/v1/inference/stabilityai/sdxl-turbo', {

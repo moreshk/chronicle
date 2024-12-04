@@ -38,6 +38,7 @@ const StartQuest = ({
           properties={properties}
           nftAddress={nftAddress}
           walletAddress={walletAddress}
+          showChat={showChat}
         />
       ) : (
         <div className="mx-auto max-w-4xl w-full flex justify-center items-center min-h-screen p-6 ">
