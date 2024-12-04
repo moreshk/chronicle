@@ -50,6 +50,15 @@ const ChatWithQuestNft = ({
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  const [contextMessages, setContextMessages] = useState<Message[]>([]);
+
+  const updateContextMessages = (newMessage: Message) => {
+    setContextMessages(prevMessages => {
+      const updatedMessages = [...prevMessages, newMessage].filter(msg => !msg.content.startsWith('<img'));
+      return updatedMessages.slice(-100); // Keep only the last 100 messages for context
+    });
+  };
+
   const paintbrushAction = async () => {
     setErrorMessage(null);
     setLoading(true);
@@ -78,7 +87,7 @@ const ChatWithQuestNft = ({
         console.log("Generated Image URL:", imageUrl);
         setGeneratedImageUrl(imageUrl);
 
-        setMessages([...messages, { role: 'system', content: `<img src="${imageUrl}" alt="Generated Image" style="width: 512px; height: 512px;" />` }]);
+        setMessages(prevMessages => [...prevMessages, { role: 'system', content: `<img src="${imageUrl}" alt="Generated Image" style="width: 512px; height: 512px;" />` }]);
       }
     } catch (error) {
       console.error('Error generating image:', error);
@@ -220,27 +229,19 @@ const ChatWithQuestNft = ({
 
     const enoughCredits = await checkCredits(nftAddress);
     if (!enoughCredits) {
-      setMessages((oldMessages) => [
-        ...oldMessages,
-        { role: "system", content: "Not enough credits" },
-      ]);
+      setMessages(oldMessages => [...oldMessages, { role: "system", content: "Not enough credits" }]);
       setLoading(false);
       return;
     }
 
     try {
-      setMessages([...messages, userMessage]);
+      setMessages(prevMessages => [...prevMessages, userMessage]);
+      updateContextMessages(userMessage);
 
-
-      const messageHistory =
-        messages.length >= 100 ? messages.slice(-100) : messages;
-
-      console.log("Message count", messages.length);
-      console.log(personalityPrompt);
       const promptData = [
         personalityPrompt,
-        ...messageHistory,
-        { role: "user" as const, content: userInput },
+        ...contextMessages,
+        userMessage,
       ];
 
       const content = await getQuestResponse(promptData);
@@ -250,33 +251,19 @@ const ChatWithQuestNft = ({
         content: content || "No response",
       };
 
-      setMessages([
-        ...messageHistory,
-        { role: "user", content: userInput },
-        assistantMessage,
-      ]);
+      setMessages(prevMessages => [...prevMessages, assistantMessage]);
+      updateContextMessages(assistantMessage);
+
       setLoading(false);
       updateCredits(creditsDetails?.credits ? creditsDetails.credits - 1 : 0);
-      await recordQuestHistory(
-        userMessage.content,
-        assistantMessage.content,
-        nftAddress,
-        walletAddress
-      );
+      await recordQuestHistory(userMessage.content, assistantMessage.content, nftAddress, walletAddress);
       const creditDeducted = await deductCredits(nftAddress);
       if (!creditDeducted) {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { role: "system", content: "Failed to deduct credits." },
-        ]);
-        return;
+        setMessages(prevMessages => [...prevMessages, { role: "system", content: "Failed to deduct credits." }]);
       }
     } catch (error) {
       console.error("Error in submitMessage:", error);
-      setMessages((oldMessages) => [
-        ...oldMessages,
-        { role: "system", content: "An error occurred while processing your message. Please try again." },
-      ]);
+      setMessages(oldMessages => [...oldMessages, { role: "system", content: "An error occurred while processing your message. Please try again." }]);
     } finally {
       setLoading(false);
     }
@@ -289,40 +276,23 @@ const ChatWithQuestNft = ({
 
     const enoughCredits = await checkCredits(nftAddress);
     if (!enoughCredits) {
-      setMessages((oldMessages) => [
-        ...oldMessages,
-        { role: "system", content: "Not enough credits" },
-      ]);
+      setMessages(oldMessages => [...oldMessages, { role: "system", content: "Not enough credits" }]);
       setLoading(false);
       return;
     }
 
     try {
-      setTimeout(() => {
-        if (ref?.current) {
-          const scrollHeight = ref.current.scrollHeight;
-          const clientHeight = ref.current.clientHeight;
-          const scrollPosition = scrollHeight - clientHeight;
-          ref.current.scrollTop = scrollPosition;
-        }
-      }, 0);
-
-      const messageHistory =
-        messages.length >= 100 ? messages.slice(-100) : messages;
-
-
-      // Exclude "Start Quest" from being added to the UI
+      const userMessage: Message = { role: "user", content: value };
       if (value !== "Start Quest") {
-        messageHistory.push({ role: "user", content: value });
+        setMessages(prevMessages => [...prevMessages, userMessage]);
+        updateContextMessages(userMessage);
       }
 
       const promptData = [
         personalityPrompt,
-        ...messageHistory,
-        { role: "system" as const, content: value },
+        ...contextMessages,
+        userMessage,
       ];
-
-      console.log("Personality Prompt", personalityPrompt);
 
       const content = await getQuestResponse(promptData);
 
@@ -331,40 +301,21 @@ const ChatWithQuestNft = ({
         content: content || "No response",
       };
 
-      // Record every chatbot message, not just the first one
-      await recordQuestHistory(
-        value,
-        assistantMessage.content,
-        nftAddress,
-        walletAddress
-      );
+      setMessages(prevMessages => [...prevMessages, assistantMessage]);
+      updateContextMessages(assistantMessage);
 
-      // Deduct credits
+      await recordQuestHistory(value, assistantMessage.content, nftAddress, walletAddress);
+
       const creditDeducted = await deductCredits(nftAddress);
       if (!creditDeducted) {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { role: "system", content: "Failed to deduct credits." },
-        ]);
+        setMessages(prevMessages => [...prevMessages, { role: "system", content: "Failed to deduct credits." }]);
         return;
       }
 
-      // Update the messages state with the new user message and the assistant's response
-      setMessages([
-        ...messageHistory,
-        assistantMessage,
-      ]);
-
-      // Update credits in the context
       updateCredits(creditsDetails?.credits ? creditsDetails.credits - 1 : 0);
-
-      setUserInput("");
     } catch (e) {
       console.error("Error in autoFunctionCall:", e);
-      setMessages((oldMessages) => [
-        ...oldMessages,
-        { role: "system", content: "An error occurred while processing your message. Please try again." },
-      ]);
+      setMessages(oldMessages => [...oldMessages, { role: "system", content: "An error occurred while processing your message. Please try again." }]);
     } finally {
       setLoading(false);
     }
