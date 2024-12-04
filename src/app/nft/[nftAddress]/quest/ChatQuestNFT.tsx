@@ -63,6 +63,14 @@ const ChatWithQuestNft = ({
     setErrorMessage(null);
     setLoading(true);
 
+    // Check if user has at least 20 credits
+    const enoughCredits = await checkCredits(nftAddress);
+    if (!enoughCredits || (creditsDetails?.credits ?? 0) < 20) {
+      setErrorMessage('Not enough credits. You need at least 20 credits to use the paint feature.');
+      setLoading(false);
+      return;
+    }
+
     // Find the last AI message
     const lastAIMessage = [...messages].reverse().find(msg => msg.role === 'assistant');
 
@@ -81,6 +89,17 @@ const ChatWithQuestNft = ({
     console.log(prompt);
 
     try {
+      // Deduct 20 credits
+      const creditDeducted = await deductCredits(nftAddress);
+      if (!creditDeducted) {
+        setErrorMessage('Failed to deduct credits.');
+        setLoading(false);
+        return;
+      }
+
+      // Update local credit state
+      updateCredits(creditsDetails?.credits ? creditsDetails.credits - 20 : 0);
+
       const imageUrl = await createImageFromPrompt(prompt);
 
       if (imageUrl) {

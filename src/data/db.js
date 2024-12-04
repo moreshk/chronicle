@@ -109,6 +109,13 @@ async function deductCredits(nftAddress) {
   return rowCount > 0; // Returns true if the update was successful, false otherwise
 }
 
+async function deductSpecificCredits(nftAddress, creditsToDeduct) {
+  const updateText =
+    "UPDATE nft_credits SET credits = credits - $2 WHERE nft_address = $1 AND credits >= $2";
+  const { rowCount } = await pool.query(updateText, [nftAddress, creditsToDeduct]);
+  return rowCount > 0; // Returns true if the update was successful, false otherwise
+}
+
 async function getCreditsForNFT(nftAddress) {
   await ensureCreditsForNFT(nftAddress);
   const selectText =
@@ -194,6 +201,7 @@ module.exports = {
   ensureCreditsForNFT,
   hasEnoughCredits,
   deductCredits,
+  deductSpecificCredits,
   getCreditsForNFT,
   resetCreditsMinutes,
   upsertHeroJourney,
