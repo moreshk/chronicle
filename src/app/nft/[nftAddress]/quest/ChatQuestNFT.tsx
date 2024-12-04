@@ -279,8 +279,19 @@ const ChatWithQuestNft = ({
   const autoFunctionCall = async (value: string) => {
     if (!value) return;
     setLoading(true);
-    try {
+    setErrorMessage(null);
 
+    const enoughCredits = await checkCredits(nftAddress);
+    if (!enoughCredits) {
+      setMessages((oldMessages) => [
+        ...oldMessages,
+        { role: "system", content: "Not enough credits" },
+      ]);
+      setLoading(false);
+      return;
+    }
+
+    try {
       setTimeout(() => {
         if (ref?.current) {
           const scrollHeight = ref.current.scrollHeight;
@@ -316,11 +327,21 @@ const ChatWithQuestNft = ({
 
       // Record every chatbot message, not just the first one
       await recordQuestHistory(
-        value, // The message sent to the chatbot, in this case, "Roll" or "Continue ..."
-        assistantMessage.content, // The chatbot's response
+        value,
+        assistantMessage.content,
         nftAddress,
         walletAddress
       );
+
+      // Deduct credits
+      const creditDeducted = await deductCredits(nftAddress);
+      if (!creditDeducted) {
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { role: "system", content: "Failed to deduct credits." },
+        ]);
+        return;
+      }
 
       // Update the messages state with the new user message and the assistant's response
       setMessages([
@@ -328,10 +349,17 @@ const ChatWithQuestNft = ({
         assistantMessage,
       ]);
 
+      // Update credits in the context
+      updateCredits(creditsDetails?.credits ? creditsDetails.credits - 1 : 0);
+
       setUserInput("");
-      setLoading(false);
     } catch (e) {
-      setUserInput("");
+      console.error("Error in autoFunctionCall:", e);
+      setMessages((oldMessages) => [
+        ...oldMessages,
+        { role: "system", content: "An error occurred while processing your message. Please try again." },
+      ]);
+    } finally {
       setLoading(false);
     }
   };
