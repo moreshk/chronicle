@@ -7,6 +7,8 @@ import { recordQuestHistory } from "@/serverAction/getCreditsForNFT";
 import { getHeroJourneyByNFTId } from '@/serverAction/getCreditsForNFT';
 import { upsertHeroJourney } from '@/serverAction/getCreditsForNFT';
 import { useCreditContext } from "@/wrapper/credits.wrapper";
+import { checkCredits, deductCredits } from "@/serverAction/getCreditsForNFT";
+import ShowCreditTimer from "../chat/showCreditTimer";
 // import { getSilverBalance } from '../../../../data/db'; // Adjust the import path as needed
 
 const ChatWithQuestNft = ({
@@ -304,19 +306,19 @@ const ChatWithQuestNft = ({
 
   const submitMessage = async () => {
     if (!userInput.length) return;
-
-    // Check if the word 'roll' or any word starting with 'roll' is present in the user input
-    if (/\broll\w*/i.test(userInput)) {
-      // Display an error message if 'roll' or variations are found
-      setErrorMessage('Please use the roll button to roll the dice.');
-      setTimeout(() => setErrorMessage(null), 5000);
-      setUserInput(""); // Optionally clear the input
-      return; // Exit the function
-    }
-
     setLoading(true);
     const userMessage: Message = { content: userInput, role: "user" };
     setUserInput("");
+
+    const enoughCredits = await checkCredits(nftAddress);
+    if (!enoughCredits) {
+      setMessages((oldMessages) => [
+        ...oldMessages,
+        { role: "system", content: "Not enough credits" },
+      ]);
+      setLoading(false);
+      return;
+    }
 
     try {
       setMessages([...messages, userMessage]);
@@ -343,19 +345,31 @@ const ChatWithQuestNft = ({
       setMessages([
         ...messageHistory,
         { role: "user", content: userInput },
-        {
-          role: "assistant",
-          content: content || "No response",
-        },
+        assistantMessage,
       ]);
       setLoading(false);
+      updateCredits(creditsDetails?.credits ? creditsDetails.credits - 1 : 0);
       await recordQuestHistory(
         userMessage.content,
         assistantMessage.content,
         nftAddress,
         walletAddress
       );
-    } catch (e) {
+      const creditDeducted = await deductCredits(nftAddress);
+      if (!creditDeducted) {
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { role: "system", content: "Failed to deduct credits." },
+        ]);
+        return;
+      }
+    } catch (error) {
+      console.error("Error in submitMessage:", error);
+      setMessages((oldMessages) => [
+        ...oldMessages,
+        { role: "system", content: "An error occurred while processing your message. Please try again." },
+      ]);
+    } finally {
       setLoading(false);
     }
   };
@@ -471,6 +485,9 @@ const ChatWithQuestNft = ({
                 <p className={`text-lg tracking-wider leading-7 text-gray-50/80 ${message.role === "user" ? "text-right" : ""}`}>
                   {message.content}
                 </p>
+              )}
+              {message.role === "system" && message.content === "Not enough credits" && (
+                <ShowCreditTimer />
               )}
             </div>
           ))}
