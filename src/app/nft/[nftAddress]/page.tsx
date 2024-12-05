@@ -6,7 +6,6 @@ import { useNFT } from "@/context/nftCollection.context";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useCreditContext } from "@/wrapper/credits.wrapper";
 import BuyCredits from "@/components/BuyCredits";
 
@@ -26,11 +25,11 @@ const Page = ({
     useEffect(() => {
         if (isNftLoaded === "loaded" && nfts) {
             const nftDetails = nfts.find(
-                (nft) => nft.address.toBase58() === nftAddress
+                (nft) => nft.id === nftAddress
             );
 
             if (nftDetails) {
-                const attributes = nftDetails.json?.attributes?.reduce((acc, attr) => {
+                const attributes = nftDetails.content.metadata.attributes?.reduce((acc, attr) => {
                     acc[attr.trait_type as string] = attr.value;
                     return acc;
                 }, {} as Record<string, unknown>) ?? {};
@@ -91,11 +90,11 @@ const Page = ({
 
     if (isNftLoaded === "loaded" && nfts) {
         const nftDetails = nfts.find(
-            (nft) => nft.address.toBase58() === nftAddress
+            (nft) => nft.id === nftAddress
         );
 
         if (nftDetails) {
-            const attributes = nftDetails.json?.attributes?.reduce((acc, attr) => {
+            const attributes = nftDetails.content.metadata.attributes?.reduce((acc, attr) => {
                 acc[attr.trait_type as string] = attr.value;
                 return acc;
             }, {} as Record<string, unknown>) ?? {};
@@ -106,8 +105,8 @@ const Page = ({
                 <main className="items-center justify-center px-4 py-24 sm:py-24 sm:p-24">
                     <div className="flex justify-center items-center">
                         <img
-                            src={nftDetails.json?.image}
-                            alt={nftDetails.json?.name}
+                            src={nftDetails.content.files[0]?.uri || nftDetails.content.links?.image}
+                            alt={nftDetails.content.metadata.name}
                             className="rounded-xl w-full h-auto max-w-md sm:max-w-sm"
                         />
                     </div>
@@ -116,11 +115,11 @@ const Page = ({
                         <BuyCredits nftAddress={nftAddress} />
                     </div>
                     <h1 className="text-4xl font-bold text-center my-4">
-                        {nftDetails.json?.name}
+                        {nftDetails.content.metadata.name}
                     </h1>
 
                     <p className="text-center mx-auto max-w-4xl">
-                        {nftDetails.json?.description}
+                        {nftDetails.content.metadata.description}
                     </p>
                     <div className="flex justify-center items-end gap-4 mt-6 flex-col sm:flex-row w-full">
                         <Link
