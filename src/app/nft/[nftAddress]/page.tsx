@@ -29,10 +29,12 @@ const Page = ({
             );
 
             if (nftDetails) {
-                const attributes = nftDetails.content.metadata.attributes?.reduce((acc, attr) => {
-                    acc[attr.trait_type as string] = attr.value;
+                const attributes = nftDetails.content.metadata.attributes?.reduce((acc: Record<string, unknown>, attr: { trait_type?: string; value: unknown }) => {
+                    if (attr.trait_type) {
+                        acc[attr.trait_type] = attr.value;
+                    }
                     return acc;
-                }, {} as Record<string, unknown>) ?? {};
+                }, {});
 
                 setSpecies(attributes['Species'] as string);
                 setBackground(attributes['Background'] as string);
@@ -94,10 +96,12 @@ const Page = ({
         );
 
         if (nftDetails) {
-            const attributes = nftDetails.content.metadata.attributes?.reduce((acc, attr) => {
-                acc[attr.trait_type as string] = attr.value;
+            const attributes = nftDetails.content.metadata.attributes?.reduce((acc: Record<string, unknown>, attr: { trait_type?: string; value: unknown }) => {
+                if (attr.trait_type) {
+                    acc[attr.trait_type] = attr.value;
+                }
                 return acc;
-            }, {} as Record<string, unknown>) ?? {};
+            }, {});
 
             const buttonBaseStyle = "inline-flex h-12 items-center justify-center rounded-lg border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 whitespace-nowrap";
 
