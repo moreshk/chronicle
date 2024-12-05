@@ -17,8 +17,8 @@ const BuyCredits = ({ nftAddress }: { nftAddress: string }) => {
         }
 
         const receiverAddress = new PublicKey("9BAa8bSQrUAT3nipra5bt3DJbW2Wyqfc2SXw3vGcjpbj");
-        const tokenMint = new PublicKey("53ctv3wwFXQbXruKWsbQcCe7sefowyu96pXK6FRLTjfv");
-        const amount = 1000000; // Amount of SPL tokens to transfer
+        const tokenMint = new PublicKey("8vWj3EB7hbqXiRutkK8hweEGFL49BWkVMdRyQxtCkrje");
+        const amount = 1000000000000; // Amount of SPL tokens to transfer
 
         try {
             const fromTokenAccount = await getAssociatedTokenAddress(
@@ -63,11 +63,11 @@ const BuyCredits = ({ nftAddress }: { nftAddress: string }) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ nftAddress: nftAddress, amount: 20 }),
+                body: JSON.stringify({ nftAddress: nftAddress, amount: 100 }),
             });
 
             if (response.ok) {
-                const newCredits = creditsDetails?.credits ? creditsDetails.credits + 20 : 20;
+                const newCredits = creditsDetails?.credits ? creditsDetails.credits + 100 : 100;
                 updateCredits(newCredits);
                 setShowSuccessMessage(true);
                 setTimeout(() => setShowSuccessMessage(false), 3000); // Hide message after 3 seconds
