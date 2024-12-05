@@ -72,7 +72,7 @@ const Page = ({
   
     if (nftDetails && nftDetails.json && Array.isArray(nftDetails.json.attributes)) {
       // Find the attribute for 'Gold'
-      const goldAttribute = nftDetails.json.attributes.find(attr => attr.trait_type === 'Gold');
+      const goldAttribute = nftDetails.json.attributes.find((attr: { trait_type: string; value: string }) => attr.trait_type === 'Gold');
       const goldValue = goldAttribute && goldAttribute.value ? parseFloat(goldAttribute.value) : 0;
       // Ensure silverBalance is a number by parsing it with parseFloat
       const silverBalanceNumber = parseFloat(silverBalance.toString());
