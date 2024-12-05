@@ -54,10 +54,10 @@ const ChatWithQuestNft = ({
     setErrorMessage(null);
     setLoading(true);
 
-    // Check if user has at least 20 credits
+    // Check if user has at least 10 credits
     const enoughCredits = await checkCredits(nftAddress);
-    if (!enoughCredits || (creditsDetails?.credits ?? 0) < 20) {
-      setErrorMessage('Not enough credits. You need at least 20 credits to use the paint feature.');
+    if (!enoughCredits || (creditsDetails?.credits ?? 0) < 10) {
+      setErrorMessage('Not enough credits. You need at least 10 credits to use the paint feature.');
       setLoading(false);
       return;
     }
@@ -80,7 +80,7 @@ const ChatWithQuestNft = ({
     // console.log(prompt);
 
     try {
-      // Deduct 20 credits
+      // Deduct 10 credits
       const creditDeducted = await deductCredits(nftAddress);
       if (!creditDeducted) {
         setErrorMessage('Failed to deduct credits.');
@@ -89,7 +89,7 @@ const ChatWithQuestNft = ({
       }
 
       // Update local credit state
-      updateCredits(creditsDetails?.credits ? creditsDetails.credits - 20 : 0);
+      updateCredits(creditsDetails?.credits ? creditsDetails.credits - 10 : 0);
 
       const imageUrl = await createImageFromPrompt(prompt);
 
