@@ -12,8 +12,7 @@ const Page = ({
   params: { nftAddress: string };
 }) => {
   const { nfts, error, isNftLoaded } = useNFT();
-  const { connected } = useWallet();
-  const { publicKey } = useWallet(); // publicKey is the wallet address
+  const { connected, publicKey } = useWallet();
 
   if (error) {
     return (
@@ -42,23 +41,26 @@ const Page = ({
 
   if (isNftLoaded === "loaded" && nfts) {
     const nftDetails = nfts.find(
-      (nft) => nft.address.toBase58() === nftAddress
+      (nft) => nft.id === nftAddress
     );
 
-    if (nftDetails && nftDetails.json) {
+    if (nftDetails && nftDetails.content) {
+      const content = nftDetails.content;
       if (
-        nftDetails.json.image &&
-        nftDetails.json.description &&
-        nftDetails.json.name &&
-        nftDetails.json.attributes
+        content.files &&
+        content.files[0] &&
+        content.metadata &&
+        content.metadata.name &&
+        content.metadata.description &&
+        content.metadata.attributes
       ) {
         return (
           <div className="pt-20">
             <StartQuest
-              image={nftDetails.json.image}
-              description={nftDetails.json.description}
-              title={nftDetails.json.name}
-              properties={nftDetails.json.attributes}
+              image={content.files[0].uri || content.links?.image}
+              description={content.metadata.description}
+              title={content.metadata.name}
+              properties={content.metadata.attributes}
               nftAddress={nftAddress}
               walletAddress={publicKey?.toBase58() ?? ''}
             />

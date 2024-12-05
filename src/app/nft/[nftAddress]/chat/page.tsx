@@ -31,7 +31,7 @@ const Page = ({
 
   if (isNftLoaded === "loaded" && nfts) {
     const nftDetails = nfts.find(
-      (nft) => nft.address.toBase58() === nftAddress
+      (nft) => nft.id === nftAddress
     );
 
     if (nftDetails) {
@@ -53,22 +53,25 @@ const Page = ({
       ];
       const speakingStyle = speakingStyles[randomNumber - 1];
 
+      const content = nftDetails.content;
       if (
-        nftDetails.json &&
-        nftDetails.json.image &&
-        nftDetails.json.description &&
-        nftDetails.json.name &&
-        nftDetails.json.attributes
+        content &&
+        content.files &&
+        content.files[0] &&
+        content.metadata &&
+        content.metadata.name &&
+        content.metadata.description &&
+        content.metadata.attributes
       ) {
         return (
           <ChatWithNft
-            image={nftDetails.json.image}
-            description={nftDetails.json.description}
-            title={nftDetails.json.name}
-            properties={nftDetails.json.attributes}
+            image={content.files[0].uri || content.links?.image}
+            description={content.metadata.description}
+            title={content.metadata.name}
+            properties={content.metadata.attributes}
             speakingStyle={speakingStyle}
-            nftAddress={nftAddress} // Pass the NFT address to the ChatWithNft component
-            walletAddress={publicKey!.toBase58()} // Pass the user's wallet address to the ChatWithNft component
+            nftAddress={nftAddress}
+            walletAddress={publicKey!.toBase58()}
           />
         );
       }
