@@ -9,8 +9,8 @@ export default function ClaimPage() {
   const { connected } = useWallet();
   
   const airdropConfig = {
-    distributerAccount: "4QgkhejzwgQwGp2NtDb46tx4Kyjqn2YjWXJEuTMKcdRc",
-    tokenMint: "HdFxm7rYeUjQnfT3w5vZr8bPgRPzKj7BoZpWcdL2Hq3D",
+    distributerAccount: "HYh5S9XAxbCSSC8xy3TN1HyRPePAwPWrLzX4ZsRJPG2e",
+    tokenMint: "8vWj3EB7hbqXiRutkK8hweEGFL49BWkVMdRyQxtCkrje",
     snapshotTree: {
       claims,
     }
