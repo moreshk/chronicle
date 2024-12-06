@@ -31,7 +31,7 @@ export default function RootLayout({
               <NFTCollectionProvider>
                 <CNFTCollectionProvider>
                   <CreditProvider>
-                    <div className="absolute top-4 right-4 sm:top-10 sm:right-10">
+                    <div className="absolute top-4 right-4 sm:top-10 sm:right-10 flex items-center">
                       <ConnectWalletButton />
                     </div>
                     {children}
