@@ -23,6 +23,8 @@ export const ConnectWalletButton = () => {
       transition={{ delay: 0.3 }}
       className="flex gap-2"
     >
+      
+      <WalletMultiButton />
       {connected && (
         <Link
           href="https://jup.ag/swap/SOL-8vWj3EB7hbqXiRutkK8hweEGFL49BWkVMdRyQxtCkrje"
@@ -33,7 +35,6 @@ export const ConnectWalletButton = () => {
           Buy Chronicle
         </Link>
       )}
-      <WalletMultiButton />
     </motion.div>
   );
 };
