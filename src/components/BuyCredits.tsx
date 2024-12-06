@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey, Transaction } from "@solana/web3.js";
 import { TOKEN_PROGRAM_ID, createTransferInstruction, getAssociatedTokenAddress, ASSOCIATED_TOKEN_PROGRAM_ID } from "@solana/spl-token";
@@ -10,7 +10,12 @@ const BuyCredits = ({ nftAddress }: { nftAddress: string }) => {
     const { updateCredits, creditsDetails } = useCreditContext();
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
+    useEffect(() => {
+        console.log("BuyCredits nftAddress:", nftAddress);
+    }, [nftAddress]);
+
     const handleBuyCredits = async () => {
+        // console.log("Buying credits for nftAddress:", nftAddress);
         if (!publicKey || !connection) {
             console.error("Wallet not connected");
             return;
@@ -88,7 +93,8 @@ const BuyCredits = ({ nftAddress }: { nftAddress: string }) => {
         <div className="relative">
             <button
                 onClick={handleBuyCredits}
-                className="inline-flex h-12 animate-background-shine items-center justify-center rounded-lg border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 whitespace-nowrap"
+                className="block w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-slate-800 hover:text-white transition-colors duration-150 ease-in-out"
+                role="menuitem"
             >
                 Buy Credits
             </button>
