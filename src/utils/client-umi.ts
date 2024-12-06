@@ -8,3 +8,8 @@ export const clientUmi = createUmi('https://rpc.helius.xyz/?api-key=1bd7151b-2c5
     .use(mplTokenMetadata())
     .use(mplBubblegum())
     .use(dasApi())
+
+// export const clientUmi = createUmi('https://omniscient-spring-surf.solana-devnet.quiknode.pro/aa4fd5250ec7587a58184760c81b7c86b2f6190b/')
+//     .use(mplTokenMetadata())
+//     .use(mplBubblegum())
+//     .use(dasApi())
