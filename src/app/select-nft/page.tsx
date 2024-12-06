@@ -5,6 +5,7 @@ import { useNFT } from "@/context/nftCollection.context";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import Link from 'next/link';
 
 const Page = () => {
   const { nfts, error, isNftLoaded } = useNFT();
@@ -39,6 +40,29 @@ const Page = () => {
   }
 
   if (isNftLoaded === "loaded" && nfts) {
+    if (nfts.length === 0) {
+      return (
+        <main className="flex min-h-screen flex-col items-center justify-center px-4 sm:p-24">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="font-bold text-3xl sm:text-4xl text-center text-balance mb-8"
+          >
+            No Chronicle NFTs Detected
+          </motion.h1>
+          <Link
+            href="https://www.tensor.trade/trade/chronicle"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-12 items-center justify-center rounded-lg border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 animate-background-shine"
+          >
+            Buy NFT on Tensor Trade
+          </Link>
+        </main>
+      );
+    }
+    
     return (
       <main className="flex min-h-screen flex-col items-center justify-center px-4 sm:p-24">
         <motion.h1
