@@ -91,31 +91,12 @@ export const createImageFromPrompt = async (prompt: string): Promise<string | nu
 
 export const createCharacterImage = async (characterOptions: CharacterOptions): Promise<string | null> => {
   try {
-    // Generate improved prompt using OpenAI chat completion
-    const improvedPromptCompletion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        {
-          role: "system",
-          content: "You are an expert at creating prompts for SDXL Turbo image generation models. Your task is to create a detailed prompt for a character image in an RPG style game based on the given characteristics. Focus on visual details and avoid mentioning game mechanics or non-visual elements."
-        },
-        {
-          role: "user",
-          content: `Create a prompt for an RPG character with the following characteristics:
-            Class: ${characterOptions.class}
-            Species: ${characterOptions.species}
-            Hair Color: ${characterOptions.hairColour}
-            Skin Color: ${characterOptions.skinColour}
-            Clothing: ${characterOptions.clothing}
-            Headpiece: ${characterOptions.headpiece}
-            
-            The image should be a full-body portrait in a dynamic pose, showcasing the character's class and equipment.`
-        }
-      ],
-    });
-
-    const improvedPrompt = improvedPromptCompletion.choices[0]?.message.content;
-    // console.log("Improved character prompt:", improvedPrompt);
+    // Create a detailed prompt for SDXL Turbo
+    const prompt = `Detailed portrait of an RPG character, ${characterOptions.class}, ${characterOptions.species}, ${characterOptions.sex}, 
+      with ${characterOptions.hairColour} hair and ${characterOptions.skinColour} skin. 
+      Wearing ${characterOptions.clothing} and ${characterOptions.headpiece}. 
+      Focus on face and upper body, showing intricate details of the character's features and equipment. 
+      Fantasy art style, high quality, vibrant colors, dramatic lighting.`;
 
     // Generate image using Stability AI SDXL Turbo via Deep Infra API
     const response = await fetch('https://api.deepinfra.com/v1/inference/stabilityai/sdxl-turbo', {
@@ -125,7 +106,7 @@ export const createCharacterImage = async (characterOptions: CharacterOptions): 
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        prompt: improvedPrompt || `RPG character, ${characterOptions.class}, ${characterOptions.species}, ${characterOptions.hairColour} hair, ${characterOptions.skinColour} skin, wearing ${characterOptions.clothing} and ${characterOptions.headpiece}, full body portrait, dynamic pose, detailed, fantasy art style`,
+        prompt: prompt,
         num_images: 1,
         width: 1024,
         height: 1024,

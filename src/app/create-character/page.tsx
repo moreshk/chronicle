@@ -11,6 +11,7 @@ const CharacterCreation = () => {
   const [characterOptions, setCharacterOptions] = useState<CharacterOptions>({
     class: '',
     species: '',
+    sex: '',
     hairColour: '',
     skinColour: '',
     clothing: '',

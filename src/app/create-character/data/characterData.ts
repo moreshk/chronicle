@@ -1,6 +1,7 @@
 export interface CharacterOptions {
   class: string;
   species: string;
+  sex: string;
   hairColour: string;
   skinColour: string;
   clothing: string;
@@ -10,6 +11,7 @@ export interface CharacterOptions {
 export interface OptionsType {
   class: string[];
   species: string[];
+  sex: string[];
   hairColour: string[];
   skinColour: string[];
   clothing: {
@@ -23,6 +25,7 @@ export interface OptionsType {
 export const options: OptionsType = {
   class: ['Barbarian', 'Bard', 'Cleric', 'Druid', 'Fighter', 'Monk', 'Paladin', 'Ranger', 'Rogue', 'Sorcerer', 'Warlock', 'Wizard'],
   species: ['Human', 'Elf', 'Dwarf', 'Halfling', 'Dragonborn', 'Gnome', 'Half-Elf', 'Half-Orc', 'Tiefling'],
+  sex: ['Male', 'Female'],
   hairColour: ['Black', 'Brown', 'Blonde', 'Red', 'Gray', 'White', 'Bald', 'Blue', 'Green', 'Purple', 'Pink', 'Orange', 'Silver'],
   skinColour: ['Ivory', 'Olive', 'Tan', 'Bronze', 'Amber', 'Caramel', 'Sienna', 'Chestnut', 'Mahogany', 'Ebony', 'Alabaster', 'Porcelain', 'Onyx'],
   clothing: {
