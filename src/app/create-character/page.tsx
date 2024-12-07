@@ -46,7 +46,7 @@ const CharacterCreation = () => {
       >
         Create Your Character
       </motion.h1>
-      <div className="flex flex-col md:flex-row w-full max-w-6xl gap-8">
+      <div className="flex flex-col lg:flex-row w-full max-w-7xl gap-8">
         <CharacterOptionsForm
           options={options}
           characterOptions={characterOptions}
