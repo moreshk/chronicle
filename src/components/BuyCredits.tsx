@@ -97,7 +97,7 @@ const BuyCredits = ({ nftAddress }: { nftAddress: string }) => {
                 className="block w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-slate-800 hover:text-white transition-colors duration-150 ease-in-out"
                 role="menuitem"
             >
-                Buy Credits
+                Buy 100 Credits
             </button>
             {showSuccessMessage && (
                 <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-4 py-2 bg-green-500 text-white rounded-md text-sm">
