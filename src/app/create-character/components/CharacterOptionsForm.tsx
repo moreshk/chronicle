@@ -1,5 +1,5 @@
 import React from 'react';
-import { CharacterOptions, OptionsType } from '../characterData';
+import { CharacterOptions, OptionsType } from '../data/characterData';
 
 interface CharacterOptionsFormProps {
   options: OptionsType;

@@ -1,5 +1,6 @@
 "use server";
 import OpenAI from "openai";
+import { CharacterOptions } from '../app/create-character/characterData';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -84,6 +85,63 @@ export const createImageFromPrompt = async (prompt: string): Promise<string | nu
     return imageUrl ?? null;
   } catch (e) {
     console.error("Error in createImageFromPrompt:", e);
+    return null;
+  }
+};
+
+export const createCharacterImage = async (characterOptions: CharacterOptions): Promise<string | null> => {
+  try {
+    // Generate improved prompt using OpenAI chat completion
+    const improvedPromptCompletion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: "You are an expert at creating prompts for SDXL Turbo image generation models. Your task is to create a detailed prompt for a character image in an RPG style game based on the given characteristics. Focus on visual details and avoid mentioning game mechanics or non-visual elements."
+        },
+        {
+          role: "user",
+          content: `Create a prompt for an RPG character with the following characteristics:
+            Class: ${characterOptions.class}
+            Species: ${characterOptions.species}
+            Hair Color: ${characterOptions.hairColour}
+            Skin Color: ${characterOptions.skinColour}
+            Clothing: ${characterOptions.clothing}
+            Headpiece: ${characterOptions.headpiece}
+            
+            The image should be a full-body portrait in a dynamic pose, showcasing the character's class and equipment.`
+        }
+      ],
+    });
+
+    const improvedPrompt = improvedPromptCompletion.choices[0]?.message.content;
+    // console.log("Improved character prompt:", improvedPrompt);
+
+    // Generate image using Stability AI SDXL Turbo via Deep Infra API
+    const response = await fetch('https://api.deepinfra.com/v1/inference/stabilityai/sdxl-turbo', {
+      method: 'POST',
+      headers: {
+        'Authorization': `bearer ${process.env.DEEP_INFRA_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        prompt: improvedPrompt || `RPG character, ${characterOptions.class}, ${characterOptions.species}, ${characterOptions.hairColour} hair, ${characterOptions.skinColour} skin, wearing ${characterOptions.clothing} and ${characterOptions.headpiece}, full body portrait, dynamic pose, detailed, fantasy art style`,
+        num_images: 1,
+        width: 1024,
+        height: 1024,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Deep Infra API request failed with status ${response.status}`);
+    }
+
+    const data = await response.json();
+    const imageUrl = data.images[0];
+
+    return imageUrl ?? null;
+  } catch (e) {
+    console.error("Error in createCharacterImage:", e);
     return null;
   }
 };
