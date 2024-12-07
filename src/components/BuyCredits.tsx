@@ -22,7 +22,7 @@ const BuyCredits = ({ nftAddress }: { nftAddress: string }) => {
             return;
         }
 
-        const receiverAddress = new PublicKey("9BAa8bSQrUAT3nipra5bt3DJbW2Wyqfc2SXw3vGcjpbj");
+        const receiverAddress = new PublicKey("F3nfkmvct4WGNvUywUX7qpSaEhnbpSgxaKRouqJWnmop");
         const tokenMint = new PublicKey("8vWj3EB7hbqXiRutkK8hweEGFL49BWkVMdRyQxtCkrje");
         const amount = 100000000000000; // Amount of SPL tokens to transfer
 
