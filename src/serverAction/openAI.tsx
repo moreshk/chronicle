@@ -1,6 +1,6 @@
 "use server";
 import OpenAI from "openai";
-import { CharacterOptions } from '../app/create-character/characterData';
+import { CharacterOptions } from '../app/create-character/data/characterData';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
