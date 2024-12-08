@@ -1,19 +1,17 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { CharacterOptions } from '../data/characterData';
+import GenerateCharacterImage from '@/components/GenerateCharacterImage';
 
 interface CharacterPreviewProps {
   characterOptions: CharacterOptions;
   characterImage: string | null;
-  isLoading: boolean;
-  onGenerateCharacter: () => void;
+  setCharacterImage: (imageUrl: string) => void;
 }
 
 const CharacterPreview: React.FC<CharacterPreviewProps> = ({ 
   characterOptions, 
-  characterImage, 
-  isLoading, 
-  onGenerateCharacter 
+  characterImage,
+  setCharacterImage
 }) => {
   return (
     <div className="flex-1 flex flex-col items-center justify-center">
@@ -25,15 +23,10 @@ const CharacterPreview: React.FC<CharacterPreviewProps> = ({
           <p className="text-neutral-400">Character Preview</p>
         )}
       </div>
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className="w-full max-w-xl inline-flex h-12 animate-background-shine items-center justify-center rounded-md border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
-        onClick={onGenerateCharacter}
-        disabled={isLoading}
-      >
-        {isLoading ? 'Generating...' : 'Generate Character'}
-      </motion.button>
+      <GenerateCharacterImage
+        characterOptions={characterOptions}
+        onImageGenerated={setCharacterImage}
+      />
     </div>
   );
 };
