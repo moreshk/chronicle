@@ -1,6 +1,6 @@
-import { u64 } from "@saberhq/token-utils";
-import type { PublicKey } from "@solana/web3.js";
-import type BN from "bn.js";
+import { PublicKey } from "@solana/web3.js";
+import BN from "bn.js";
+import { u64 } from "@solana/spl-token";
 import { keccak_256 } from "js-sha3";
 
 import { MerkleTree } from "./merkle-tree";
