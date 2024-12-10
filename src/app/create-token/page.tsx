@@ -13,7 +13,10 @@ import {
   createInitializeMintInstruction, 
   getMinimumBalanceForRentExemptMint, 
   MINT_SIZE, 
-  TOKEN_PROGRAM_ID 
+  TOKEN_PROGRAM_ID,
+  createAssociatedTokenAccountInstruction,
+  getAssociatedTokenAddress,
+  createMintToInstruction
 } from "@solana/spl-token";
 import { ConnectWallet } from "@/components/connectWallet";
 
@@ -33,8 +36,14 @@ const CreateToken = () => {
     try {
       const mint = Keypair.generate();
       const decimals = 9;
+      const totalSupply = 1_000_000_000; // 1 Billion
 
       const lamports = await getMinimumBalanceForRentExemptMint(connection);
+
+      const associatedTokenAddress = await getAssociatedTokenAddress(
+        mint.publicKey,
+        publicKey
+      );
 
       const transaction = new Transaction().add(
         SystemProgram.createAccount({
@@ -50,6 +59,18 @@ const CreateToken = () => {
           publicKey,
           publicKey,
           TOKEN_PROGRAM_ID
+        ),
+        createAssociatedTokenAccountInstruction(
+          publicKey,
+          associatedTokenAddress,
+          publicKey,
+          mint.publicKey
+        ),
+        createMintToInstruction(
+          mint.publicKey,
+          associatedTokenAddress,
+          publicKey,
+          totalSupply * (10 ** decimals)
         )
       );
 
@@ -62,6 +83,7 @@ const CreateToken = () => {
       console.log(`Token created: ${mint.publicKey.toBase58()}`);
       console.log(`Name: ${tokenName}`);
       console.log(`Description: ${tokenDescription}`);
+      console.log(`Total supply minted to ${publicKey.toBase58()}`);
 
     } catch (error) {
       console.error("Error creating token:", error);
