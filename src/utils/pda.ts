@@ -1,6 +1,6 @@
 import { PublicKey } from "@solana/web3.js";
-import { u64 } from "@saberhq/token-utils";
 import { utils } from "@project-serum/anchor";
+import BN from "bn.js";
 
 export const findDistributorKey = async (
   base: PublicKey,
@@ -20,7 +20,7 @@ export const findClaimStatusKey = async (
   return PublicKey.findProgramAddressSync(
     [
       utils.bytes.utf8.encode("ClaimStatus"),
-      new u64(index).toArrayLike(Buffer, "le", 8),
+      new BN(index).toArrayLike(Buffer, "le", 8),
       distributor.toBytes(),
     ],
     programId

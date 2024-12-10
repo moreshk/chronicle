@@ -1,6 +1,5 @@
 import { PublicKey } from "@solana/web3.js";
 import BN from "bn.js";
-import { u64 } from "@solana/spl-token";
 import { keccak_256 } from "js-sha3";
 
 import { MerkleTree } from "./merkle-tree";
@@ -33,9 +32,9 @@ export class BalanceTree {
   // keccak256(abi.encode(index, account, amount))
   static toNode(index: number, account: PublicKey, amount: BN): Buffer {
     const buf = Buffer.concat([
-      new u64(index).toArrayLike(Buffer, "le", 8),
+      new BN(index).toArrayLike(Buffer, "le", 8),
       account.toBuffer(),
-      new u64(amount).toArrayLike(Buffer, "le", 8),
+      amount.toArrayLike(Buffer, "le", 8),
     ]);
     return Buffer.from(keccak_256(buf), "hex");
   }
