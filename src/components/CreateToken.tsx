@@ -25,6 +25,8 @@ import {
     createUpdateFieldInstruction,
 } from "@solana/spl-token-metadata";
 import axios from 'axios';
+import { findProgramAddressSync } from '@project-serum/anchor/dist/cjs/utils/pubkey';
+import { Buffer } from 'buffer';
 
 const CreateToken = () => {
     const { publicKey, signTransaction } = useWallet();
@@ -70,6 +72,35 @@ const CreateToken = () => {
         }
     };
 
+    const generateVanityAddress = (prefix: string, maxAttempts = 1000000): Keypair => {
+        console.log(`Starting vanity address generation for prefix: ${prefix}`);
+        const startTime = Date.now();
+        let attempts = 0;
+
+        while (attempts < maxAttempts) {
+            attempts++;
+            const mint = Keypair.generate();
+            const address = mint.publicKey.toBase58();
+            
+            // Log progress every 10000 attempts
+            if (attempts % 10000 === 0) {
+                const elapsedSeconds = (Date.now() - startTime) / 1000;
+                console.log(`Attempt ${attempts}: Current address ${address}`);
+                console.log(`Time elapsed: ${elapsedSeconds.toFixed(2)} seconds`);
+                console.log(`Rate: ${(attempts / elapsedSeconds).toFixed(2)} attempts/second`);
+            }
+
+            if (address.toLowerCase().startsWith(prefix.toLowerCase())) {
+                const totalTime = (Date.now() - startTime) / 1000;
+                console.log(`✅ Found matching address after ${attempts} attempts and ${totalTime.toFixed(2)} seconds`);
+                console.log(`Found address: ${address}`);
+                return mint;
+            }
+        }
+        
+        throw new Error(`Could not generate vanity address starting with '${prefix}' after ${maxAttempts} attempts`);
+    };
+
     const handleCreateToken = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!publicKey || !signTransaction) {
@@ -92,15 +123,21 @@ const CreateToken = () => {
         setStatus({ type: null, message: "" });
 
         try {
+            console.log('Starting token creation process...');
+            
+            console.log('Uploading metadata to Pinata...');
             const metadataUri = await uploadToPinata(imageFile, {
                 name: tokenName,
                 description: tokenDescription,
                 symbol: tokenSymbol,
             });
+            console.log('Metadata uploaded successfully:', metadataUri);
 
-            const mint = Keypair.generate();
+            console.log('Generating vanity address...');
+            const mint = generateVanityAddress('cybr');
             const decimals = 9;
 
+            console.log('Proceeding with token creation...');
             const metadata: TokenMetadata = {
                 mint: mint.publicKey,
                 name: tokenName,
@@ -163,7 +200,7 @@ const CreateToken = () => {
                 message: `Token created successfully! Mint address: ${mint.publicKey.toString()}`,
             });
         } catch (error) {
-            console.error("Error creating token:", error);
+            console.error('Error in token creation:', error);
             setStatus({
                 type: "error",
                 message: "Failed to create token. Please try again.",
