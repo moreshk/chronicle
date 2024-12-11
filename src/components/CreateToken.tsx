@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { useState } from "react";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import {
@@ -23,6 +24,7 @@ import {
     pack,
     createUpdateFieldInstruction,
 } from "@solana/spl-token-metadata";
+import axios from 'axios';
 
 const CreateToken = () => {
     const { publicKey, signTransaction } = useWallet();
@@ -30,8 +32,43 @@ const CreateToken = () => {
     const [tokenName, setTokenName] = useState("");
     const [tokenSymbol, setTokenSymbol] = useState("");
     const [tokenDescription, setTokenDescription] = useState("");
+    const [imageFile, setImageFile] = useState<File | null>(null);
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState<{ type: string | null; message: string }>({ type: null, message: "" });
+
+    const uploadToPinata = async (image: File, metadata: any) => {
+        try {
+            // Upload image to IPFS
+            const formData = new FormData();
+            formData.append('file', image);
+            const imageRes = await axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${process.env.NEXT_PUBLIC_PINATA_JWT}`
+                }
+            });
+            const imageUrl = `https://ipfs.io/ipfs/${imageRes.data.IpfsHash}`;
+
+            // Create and upload metadata JSON
+            const metadataJSON = {
+                name: metadata.name,
+                description: metadata.description,
+                symbol: metadata.symbol,
+                image: imageUrl,
+            };
+            const metadataRes = await axios.post("https://api.pinata.cloud/pinning/pinJSONToIPFS", metadataJSON, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${process.env.NEXT_PUBLIC_PINATA_JWT}`
+                }
+            });
+
+            return `https://ipfs.io/ipfs/${metadataRes.data.IpfsHash}`;
+        } catch (error) {
+            console.error("Error uploading to Pinata:", error);
+            throw error;
+        }
+    };
 
     const handleCreateToken = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -43,10 +80,24 @@ const CreateToken = () => {
             return;
         }
 
+        if (!imageFile) {
+            setStatus({
+                type: "error",
+                message: "Please select an image for your token",
+            });
+            return;
+        }
+
         setLoading(true);
         setStatus({ type: null, message: "" });
 
         try {
+            const metadataUri = await uploadToPinata(imageFile, {
+                name: tokenName,
+                description: tokenDescription,
+                symbol: tokenSymbol,
+            });
+
             const mint = Keypair.generate();
             const decimals = 9;
 
@@ -54,7 +105,7 @@ const CreateToken = () => {
                 mint: mint.publicKey,
                 name: tokenName,
                 symbol: tokenSymbol,
-                uri: "",
+                uri: metadataUri,
                 additionalMetadata: [["description", tokenDescription]],
             };
 
@@ -166,11 +217,38 @@ const CreateToken = () => {
                         required
                     />
                 </div>
+                <div className="mb-4">
+                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="tokenImage">
+                        Token Image
+                    </label>
+                    <input
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="tokenImage"
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                        required
+                    />
+                </div>
+
+                {imageFile && (
+                    <div className="mb-4">
+                        <img
+                            src={URL.createObjectURL(imageFile)}
+                            alt="Token preview"
+                            className="max-w-full h-auto rounded"
+                        />
+                    </div>
+                )}
+
                 <button
                     type="submit"
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    disabled={loading}
+                    className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${
+                        loading ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
                 >
-                    Create Token
+                    {loading ? 'Creating Token...' : 'Create Token'}
                 </button>
             </form>
             {status.type && (
