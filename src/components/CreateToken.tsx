@@ -72,33 +72,59 @@ const CreateToken = () => {
         }
     };
 
-    const generateVanityAddress = (prefix: string, maxAttempts = 1000000): Keypair => {
-        console.log(`Starting vanity address generation for prefix: ${prefix}`);
-        const startTime = Date.now();
-        let attempts = 0;
+    const generateVanityAddress = (
+        prefix: string, 
+        suffix: string, 
+        prefixMatchLength = 4,
+        suffixMatchLength = 4,
+        maxAttempts = 10000000,
+        timeoutSeconds = 30
+    ): Promise<Keypair> => {
+        return new Promise((resolve, reject) => {
+            console.log(`Starting vanity address generation for prefix: ${prefix} and suffix: ${suffix}`);
+            const startTime = Date.now();
+            let attempts = 0;
 
-        while (attempts < maxAttempts) {
-            attempts++;
-            const mint = Keypair.generate();
-            const address = mint.publicKey.toBase58();
-            
-            // Log progress every 10000 attempts
-            if (attempts % 10000 === 0) {
-                const elapsedSeconds = (Date.now() - startTime) / 1000;
-                console.log(`Attempt ${attempts}: Current address ${address}`);
-                console.log(`Time elapsed: ${elapsedSeconds.toFixed(2)} seconds`);
-                console.log(`Rate: ${(attempts / elapsedSeconds).toFixed(2)} attempts/second`);
-            }
+            const timeoutId = setTimeout(() => {
+                reject(new Error(`Timeout after ${timeoutSeconds} seconds`));
+            }, timeoutSeconds * 1000);
 
-            if (address.toLowerCase().startsWith(prefix.toLowerCase())) {
-                const totalTime = (Date.now() - startTime) / 1000;
-                console.log(`✅ Found matching address after ${attempts} attempts and ${totalTime.toFixed(2)} seconds`);
-                console.log(`Found address: ${address}`);
-                return mint;
-            }
-        }
-        
-        throw new Error(`Could not generate vanity address starting with '${prefix}' after ${maxAttempts} attempts`);
+            const generate = () => {
+                const batchSize = 1000;
+                
+                for (let i = 0; i < batchSize && attempts < maxAttempts; i++) {
+                    attempts++;
+                    const mint = Keypair.generate();
+                    const address = mint.publicKey.toBase58();
+                    
+                    if (attempts % 10000 === 0) {
+                        const elapsedSeconds = (Date.now() - startTime) / 1000;
+                        console.log(`Attempt ${attempts}: ${address}`);
+                        console.log(`Time elapsed: ${elapsedSeconds.toFixed(2)} seconds`);
+                        console.log(`Rate: ${(attempts / elapsedSeconds).toFixed(2)} attempts/second`);
+                    }
+
+                    if (address.toLowerCase().startsWith(prefix.toLowerCase().slice(0, prefixMatchLength)) && 
+                        address.toLowerCase().endsWith(suffix.toLowerCase().slice(-suffixMatchLength))) {
+                        clearTimeout(timeoutId);
+                        const totalTime = (Date.now() - startTime) / 1000;
+                        console.log(`✅ Found matching address after ${attempts} attempts and ${totalTime.toFixed(2)} seconds`);
+                        console.log(`Found address: ${address}`);
+                        resolve(mint);
+                        return;
+                    }
+                }
+
+                if (attempts >= maxAttempts) {
+                    clearTimeout(timeoutId);
+                    reject(new Error(`Could not generate matching address after ${maxAttempts} attempts`));
+                } else {
+                    setTimeout(generate, 0);
+                }
+            };
+
+            generate();
+        });
     };
 
     const handleCreateToken = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -134,7 +160,7 @@ const CreateToken = () => {
             console.log('Metadata uploaded successfully:', metadataUri);
 
             console.log('Generating vanity address...');
-            const mint = generateVanityAddress('cybr');
+            const mint = await generateVanityAddress('cybr', 'dao', 3, 3);
             const decimals = 9;
 
             console.log('Proceeding with token creation...');
